@@ -1,0 +1,6 @@
+venv
+.vscode
+*pycache*
+*.pyc
+TestCommand.py
+README.md
