@@ -3,7 +3,6 @@ import cv2
 import pyautogui
 import helpers.tober as tob
 import helpers.metamask as metamask
-import traceback
 
 from helpers.printfier import Printer
 from helpers.tober import Target
@@ -43,10 +42,10 @@ async def run_bot(next_action: Prodict):
 
     now = get_now()  
     next_action = adjust_next_action(next_action)          
-    send_heroes_interval_sec = next_action.config.send_heroes_to_work_min * 60
+    send_heroes_interval_sec = next_action.config.intervals.send_heroes_to_work_sec
     send_heroes_schedule_diff = now - next_action.schedules.send_heroes_to_work
 
-    refresh_heroes_interval_sec = next_action.config.refresh_heroes_positions_min * 60
+    refresh_heroes_interval_sec = next_action.config.intervals.refresh_heroes_positions_sec
     refresh_heroes_schedule_diff = now - next_action.schedules.refresh_heroes_positions
 
     if send_heroes_schedule_diff > 0:

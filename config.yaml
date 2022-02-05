@@ -1,19 +1,24 @@
-
 cryptopiece:
-  window_name: tob_cryptopiece 
-  wait_for_stamina_min: 60 
+  window_name: tob_cryptopiece
+  intervals:
+    wait_for_stamina_sec: 3600
 
 agrofarm:
   window_name: tob_agrofarm
-  wait_time_when_no_crop_left_min: 240 
+  intervals:
+    wait_time_when_no_crop_left_sec: 14400
 
-bombcrypto: 
-  window_name: tob_bombcrypto 
-  send_heroes_to_work_min: 60
-  refresh_heroes_positions_min: 10
+bombcrypto:
+  window_name: tob_bombcrypto
+  intervals:
+    send_heroes_to_work_sec: 3600
+    refresh_heroes_positions_sec: 600
 
 lunarush:
-  window_name: tob_lunarush  
-  wait_for_battle_min: 1   
-  wait_for_energy_min: 120      
-  battle_not_ended_yet_min: 1    
+  window_name: tob_lunarush
+  parameters:
+    battle_not_ended_max_retries: 5
+  intervals:
+    wait_for_battle_sec: 35
+    wait_for_energy_sec: 7200
+    battle_not_ended_yet_sec: 10

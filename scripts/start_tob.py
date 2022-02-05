@@ -96,8 +96,8 @@ async def run_bot_windows(next_action: Prodict):
 def fill_next_action(next_action: Prodict, bot_name: str, all_bots_configs: Prodict):
     next_action = Prodict({})
     next_action.schedules = Prodict({}) 
-    next_action.config = Prodict(all_bots_configs[bot_name])
     next_action.bot_name = bot_name
+    next_action.config = Prodict(all_bots_configs[bot_name])
 
     if bot_name == 'bombcrypto':
         next_action.function = bombcrypto_bot.run_bot
@@ -143,7 +143,7 @@ async def run_single_action(next_action: Prodict):
 async def run_all_windows(bot_windows, next_action: Prodict):
     result_actions = []
 
-    p.info('Running action')
+    p.info('Running action') 
     for bot_window in bot_windows:
         await tob.retry_async(initialize_bot_window, [bot_window], 100, 0.2)
 
@@ -157,7 +157,7 @@ async def run_all_windows(bot_windows, next_action: Prodict):
 
 async def wrap_bot_function(next_action: Prodict):
     retry_count = 0
-    retry_limit = 4
+    retry_limit = 1
     retry_schedule_name = f'retry_failed_{next_action.bot_name}'
 
     param_action = Prodict(next_action.copy())
@@ -178,7 +178,7 @@ async def wrap_bot_function(next_action: Prodict):
 
     now = datetime.timestamp(datetime.now())
     next_action.schedules = Prodict({})
-    next_action.schedules[retry_schedule_name] = now + 10 * 60
+    next_action.schedules[retry_schedule_name] = now + 30 * 60
 
     return next_action
 
@@ -259,7 +259,7 @@ def get_next_actions():
 
 
 while(True):
-    try:
+    try:    
 
         asyncio.run(main())
 
@@ -267,3 +267,10 @@ while(True):
         traceback.print_exc()
         last_window_amount_by_bot = Prodict({})
         all_actions = Prodict({})
+
+
+# dt = datetime.fromtimestamp(get_now())
+    
+#         if dt.hour >= 0 and dt.hour <= 6:
+#             next_action.schedules.wait_for_energy = get_now() + 180 * 60 
+#         else:

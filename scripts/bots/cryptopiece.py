@@ -36,7 +36,7 @@ async def run_bot(next_action: Prodict):
     await get_game_ready()
     await merc_battle()
 
-    wait_for_stamina = next_action.config.wait_for_stamina_min * 60
+    wait_for_stamina = next_action.config.intervals.wait_for_stamina_sec
     next_action.schedules.wait_for_stamina = get_now() + wait_for_stamina           
 
     return next_action

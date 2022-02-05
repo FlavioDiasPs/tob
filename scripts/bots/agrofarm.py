@@ -41,7 +41,7 @@ async def run_bot(next_action: Prodict):
     crop_plant_next_schedule = await crop_and_plant()
 
     if crop_plant_next_schedule == None:
-        crop_plant_next_schedule = next_action.config.wait_time_when_no_crop_left_min * 60
+        crop_plant_next_schedule = next_action.config.intervals.wait_time_when_no_crop_left_sec
 
     next_action.schedules.crop_plant_schedule = get_now() + crop_plant_next_schedule         
 

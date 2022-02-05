@@ -348,11 +348,11 @@ def retry(f, params: List[Any]=None, max_attempts=20, attempt_delay=0.2,
         try:
             result = None
             
-            if params:
+            if params:   
                 result = f(*params)
             else:
                 result = f()
-
+      
             if expected_result != None:
                 if result != expected_result:
                     raise Exception(custom_error)
