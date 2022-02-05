@@ -225,8 +225,10 @@ async def wait_next_action_time(next_actions: List[Prodict]):
     next_action = next_actions[0]
     next_action_schedule_items = Prodict(next_actions[0]).schedules.items()
     next_action_schedule_obj = min(next_action_schedule_items, key=lambda x: x[1])
+    
     next_action_schedule_desc = next_action_schedule_obj[0]
     next_action_schedule_sec = next_action_schedule_obj[1]
+    next_action_schedule_sec = add_extra_wait_time_during_dawn(next_action, next_action_schedule_sec)
 
     print('')
     time_to_wait_sec = next_action_schedule_sec
@@ -244,6 +246,17 @@ async def wait_next_action_time(next_actions: List[Prodict]):
         message = f'[tob] Next action: {next_action.window.title} -> {next_action_schedule_desc} in {time_to_wait_formated}'
         print(f' ## {message} ##', end='\r')
         await asyncio.sleep(1)
+
+
+def add_extra_wait_time_during_dawn(next_action: Prodict, next_action_schedule_sec):
+    if 'parameters' in next_action.config:
+        if 'extra_wait_time_during_dawn_sec' in next_action.config.parameters:
+            
+            dt = datetime.now()
+            if dt.hour >= 0 and dt.hour <= 6:
+                next_action_schedule_sec += next_action.config.parameters.extra_wait_time_during_dawn_sec
+
+    return next_action_schedule_sec
 
 
 def get_next_actions():
@@ -268,9 +281,3 @@ while(True):
         last_window_amount_by_bot = Prodict({})
         all_actions = Prodict({})
 
-
-# dt = datetime.fromtimestamp(get_now())
-    
-#         if dt.hour >= 0 and dt.hour <= 6:
-#             next_action.schedules.wait_for_energy = get_now() + 180 * 60 
-#         else:

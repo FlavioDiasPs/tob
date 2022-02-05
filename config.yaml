@@ -17,6 +17,7 @@ bombcrypto:
 lunarush:
   window_name: tob_lunarush
   parameters:
+    extra_wait_time_during_dawn_sec: 3600
     battle_not_ended_max_retries: 5
   intervals:
     wait_for_battle_sec: 35
