@@ -135,20 +135,19 @@ async def find_minutes_to_wait():
     p.info('Checking minutes left to next crop')
     await tob.click_target_center_async(btn_my_farm)
 
-    while (wait_time_min == 0):
-        if (tob.verify_target_exists(wait_4_minutes)):
-            wait_time_min = 5
-        elif (tob.verify_target_exists(wait_3_minutes)):
-            wait_time_min = 4
-        elif (tob.verify_target_exists(wait_2_minutes)):
-            wait_time_min = 3
-        elif (tob.verify_target_exists(wait_1_minutes)):
-            wait_time_min = 2
-        elif (tob.verify_target_exists(wait_0_minutes)):
-            wait_time_min = 1
-        else:
-            print(' **** Couldnt find any wait time. Retrying')
-            wait_time_min = -1
+    if (tob.verify_target_exists(wait_4_minutes)):
+        wait_time_min = 5
+    elif (tob.verify_target_exists(wait_3_minutes)):
+        wait_time_min = 4
+    elif (tob.verify_target_exists(wait_2_minutes)):
+        wait_time_min = 3
+    elif (tob.verify_target_exists(wait_1_minutes)):
+        wait_time_min = 2
+    elif (tob.verify_target_exists(wait_0_minutes)):
+        wait_time_min = 1
+    else:
+        print(' **** Couldnt find any wait time. Retrying')
+        wait_time_min = -1
 
     p.info(f'We will wait for {wait_time_min} minutes')
     return wait_time_min
