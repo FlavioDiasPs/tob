@@ -85,22 +85,22 @@ async def heroes_battle():
         amount_heroes_selected = tob.verify_target_ocorrency_amount(selected_hero_energy) 
         if amount_heroes_selected >= 3:
             battle_result = await run_battle()
-            continue 
+            continue     
     
-        amount_heroes_selected += await add_heroes_to_fight(unselected_hero_energy, amount_heroes_selected)
+        amount_heroes_selected = await add_heroes_to_fight(unselected_hero_energy, amount_heroes_selected)
         if amount_heroes_selected >= 3:
             battle_result = await run_battle()  
             continue   
 
         await tob.scroll(updown=-380, repeats=3)
-        amount_heroes_selected += await add_heroes_to_fight(unselected_hero_energy, amount_heroes_selected)
+        amount_heroes_selected = await add_heroes_to_fight(unselected_hero_energy, amount_heroes_selected)
          
         if amount_heroes_selected >= 3:
             battle_result = await run_battle()  
             continue
 
         await tob.scroll(updown=-380, repeats=3)  
-        amount_heroes_selected += await add_heroes_to_fight(unselected_hero_energy_part2, amount_heroes_selected)    
+        amount_heroes_selected = await add_heroes_to_fight(unselected_hero_energy_part2, amount_heroes_selected)    
       
         await tob.scroll(updown=500, repeats=5)
 
@@ -181,7 +181,7 @@ async def handle_preparation():
   
 async def add_heroes_to_fight(target, amount_heroes_selected = 0):
     
-    tob.move(random.uniform(250, 400), random.uniform(250,  400))
+    tob.move(random.uniform(250, 300), random.uniform(250,  300))
 
     p.info('Selecting more heroes to participate in battle')
     heroes_locations = await tob.find_targets_centers_async(target, confidence=0.90)

@@ -137,7 +137,10 @@ async def run_single_action(next_action: Prodict):
     p.info('Running action')
     
     await tob.retry_async(initialize_bot_window, [next_action.window], 100, 0.2)    
-    return await wrap_bot_function(next_action)
+    result_action = await wrap_bot_function(next_action)
+    next_action.window.restore()
+
+    return result_action
 
 
 async def run_all_windows(bot_windows, next_action: Prodict):
@@ -148,7 +151,8 @@ async def run_all_windows(bot_windows, next_action: Prodict):
         await tob.retry_async(initialize_bot_window, [bot_window], 100, 0.2)
 
         result_action = Prodict(await wrap_bot_function(next_action))
-       
+        
+        bot_window.restore()
         result_action.window = bot_window
         result_actions.append(result_action)
 
@@ -184,13 +188,13 @@ async def wrap_bot_function(next_action: Prodict):
 
 
 async def initialize_bot_window(bot_window):
-    bot_window.restore()
-    bot_window.moveTo(-8, -8)
-    bot_window.show()
+    # bot_window.moveTo(-8, -8)
+    # bot_window.show()
+    bot_window.maximize()
     bot_window.activate()
     
-    (width, height) = pyautogui.size() 
-    bot_window.resizeTo(width + 16, height - 14) 
+    # (width, height) = pyautogui.size() 
+    # bot_window.resizeTo(width + 16, height - 14) 
 
     await asyncio.sleep(2)
     
@@ -249,12 +253,12 @@ async def wait_next_action_time(next_actions: List[Prodict]):
 
 
 def add_extra_wait_time_during_dawn(next_action: Prodict, next_action_schedule_sec):
-    if 'parameters' in next_action.config:
-        if 'extra_wait_time_during_dawn_sec' in next_action.config.parameters:
+    # if 'parameters' in next_action.config:
+    #     if 'extra_wait_time_during_dawn_sec' in next_action.config.parameters:
             
-            dt = datetime.now()
-            if dt.hour >= 0 and dt.hour <= 6:
-                next_action_schedule_sec += next_action.config.parameters.extra_wait_time_during_dawn_sec
+    #         dt = datetime.now()
+    #         if dt.hour >= 2 and dt.hour <= 5:
+    #             next_action_schedule_sec += next_action.config.parameters.extra_wait_time_during_dawn_sec
 
     return next_action_schedule_sec
 
