@@ -161,7 +161,7 @@ async def run_all_windows(bot_windows, next_action: Prodict):
 
 async def wrap_bot_function(next_action: Prodict):
     retry_count = 0
-    retry_limit = 1
+    retry_limit = 4
     retry_schedule_name = f'retry_failed_{next_action.bot_name}'
 
     param_action = Prodict(next_action.copy())
@@ -188,13 +188,8 @@ async def wrap_bot_function(next_action: Prodict):
 
 
 async def initialize_bot_window(bot_window):
-    # bot_window.moveTo(-8, -8)
-    # bot_window.show()
     bot_window.maximize()
     bot_window.activate()
-    
-    # (width, height) = pyautogui.size() 
-    # bot_window.resizeTo(width + 16, height - 14) 
 
     await asyncio.sleep(2)
     

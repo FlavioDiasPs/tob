@@ -20,7 +20,7 @@ btn_boss_hunt_start_game = Target(cv2.imread('templates/lunarush/btn_boss_hunt_s
 btn_tap_to_open = Target(cv2.imread('templates/lunarush/btn_tap_to_open.png'), Area(580, 550,  210, 70))
 btn_available_boss = Target(cv2.imread('templates/lunarush/btn_available_boss.png'))
 
-in_battle_versus = Target(cv2.imread('templates/lunarush/in_battle_versus.png'), Area(650, 120, 70, 50))
+in_battle_versus = Target(cv2.imread('templates/lunarush/in_battle_versus.png'), Area(650, 100, 75, 60))
 btn_boss_hunt = Target(cv2.imread('templates/lunarush/btn_boss_hunt.png'), Area(920, 560, 210, 80))
  
 selected_hero_no_energy = Target(cv2.imread('templates/lunarush/selected_hero_no_energy.png'), Area(425, 315, 565, 50))
@@ -33,6 +33,7 @@ notice = Target(cv2.imread('templates/lunarush/notice.png'))
 defeat = Target(cv2.imread('templates/lunarush/defeat.png'))
 victory = Target(cv2.imread('templates/lunarush/victory.png'))
 error = Target(cv2.imread('templates/lunarush/error.png'))
+window_is_open = Target(cv2.imread('templates/lunarush/window_is_open.png'))
 
 loading_1 = Target(cv2.imread('templates/lunarush/in_game_loading.png'), Area(1100, 565, 60, 65))
 loading_2 = Target(cv2.imread('templates/lunarush/in_game_loading_2.png'), Area(1100, 565, 60, 65))
@@ -55,8 +56,8 @@ async def run_bot(next_action: Prodict):
     
     p.title('Starting LunaRush')
 
-    battle_result = await heroes_battle()
-    next_action = await calculate_next_schedule(battle_result, next_action)
+    next_schedule = await heroes_battle()
+    next_action = await calculate_next_schedule(next_schedule, next_action)
    
     return next_action
 
@@ -64,52 +65,26 @@ async def run_bot(next_action: Prodict):
 def get_now():
     return datetime.timestamp(datetime.now())
 
-
+ 
 async def heroes_battle():
 
-    if tob.verify_target_exists(in_battle_versus, confidence=0.7):
+    if tob.safe_retry(
+        tob.verify_target_exists, (in_battle_versus, 0.7), max_attempts=4, expected_result=True): 
+        await tob.safe_click_target_center_async(in_battle_versus)
         p.info('Battle is not finished yet, waiting an extra time')
         return battle_not_ended_yet_sec
+
+    if tob.verify_target_exists(window_is_open) == False:   
+        raise Exception('The window was not open')
 
     await handle_start()
     await handle_preparation()
 
-    battle_result = False
-    while(battle_result == False):
+    p.info('Removing selected heroes without energy')
+    await tob.click_all_targets_center_async(selected_hero_no_energy, x_offset=random.randint(65, 85))   
+    await asyncio.sleep(3)
 
-        p.info('Removing selected heroes without energy')
-        await tob.click_all_targets_center_async(selected_hero_no_energy, x_offset=random.randint(65, 85))   
-        await asyncio.sleep(3)
-
-        p.info('Checking amount of selected heroes able to fight')   
-        amount_heroes_selected = tob.verify_target_ocorrency_amount(selected_hero_energy) 
-        if amount_heroes_selected >= 3:
-            battle_result = await run_battle()
-            continue     
-    
-        amount_heroes_selected = await add_heroes_to_fight(unselected_hero_energy, amount_heroes_selected)
-        if amount_heroes_selected >= 3:
-            battle_result = await run_battle()  
-            continue   
-
-        await tob.scroll(updown=-380, repeats=3)
-        amount_heroes_selected = await add_heroes_to_fight(unselected_hero_energy, amount_heroes_selected)
-         
-        if amount_heroes_selected >= 3:
-            battle_result = await run_battle()  
-            continue
-
-        await tob.scroll(updown=-380, repeats=3)  
-        amount_heroes_selected = await add_heroes_to_fight(unselected_hero_energy_part2, amount_heroes_selected)    
-      
-        await tob.scroll(updown=500, repeats=5)
-
-        if amount_heroes_selected <= 0:          
-            return wait_for_energy_sec   
-        else: 
-            battle_result = await run_battle()
-
-    return battle_result
+    return await prepare_and_fight()
 
 
 async def calculate_next_schedule(battle_result, next_action: Prodict):
@@ -159,7 +134,7 @@ async def handle_start():
         p.info('Entering boss fight') 
         await tob.click_target_center_async(btn_boss_hunt_start_game, sleep_after_click_sec=0.5)
     
-    elif tob.verify_target_exists(btn_tap_to_open):  
+    elif tob.safe_retry(tob.verify_target_exists, [btn_tap_to_open], expected_result=True):  
         p.info('Taking rewards from battle')
         
         while tob.anyone(tob.verify_target_exists, [defeat, victory]):
@@ -178,7 +153,39 @@ async def handle_preparation():
     await tob.safe_click_target_center_async(btn_available_boss, sleep_after_click_sec=0.5) 
     await handle_error_async()
     
-  
+
+async def prepare_and_fight():
+    p.info('Checking amount of selected heroes able to fight')   
+
+    amount_heroes_selected = tob.verify_target_ocorrency_amount(selected_hero_energy) 
+    if amount_heroes_selected >= 3:
+        await run_battle()
+        return wait_for_battle_sec
+
+    amount_heroes_selected = await add_heroes_to_fight(unselected_hero_energy, amount_heroes_selected)
+    if amount_heroes_selected >= 3:
+        await run_battle()     
+        return wait_for_battle_sec
+
+    await tob.scroll(updown=-380, repeats=3)
+    amount_heroes_selected = await add_heroes_to_fight(unselected_hero_energy, amount_heroes_selected)
+        
+    if amount_heroes_selected >= 3:
+        await run_battle() 
+        return wait_for_battle_sec 
+
+    await tob.scroll(updown=-380, repeats=3)  
+    amount_heroes_selected = await add_heroes_to_fight(unselected_hero_energy_part2, amount_heroes_selected)    
+    
+    await tob.scroll(updown=500, repeats=5)
+
+    if amount_heroes_selected <= 0:
+        return wait_for_energy_sec
+    else: 
+        await run_battle()
+        return wait_for_battle_sec
+
+
 async def add_heroes_to_fight(target, amount_heroes_selected = 0):
     
     tob.move(random.uniform(250, 300), random.uniform(250,  300))
@@ -206,8 +213,6 @@ async def run_battle():
 
     await wait_in_battle()
     await tob.click_target_center_async(in_battle_versus, confidence=0.7, sleep_after_click_sec=2)
-
-    return wait_for_battle_sec
  
 
 async def wait_in_battle():

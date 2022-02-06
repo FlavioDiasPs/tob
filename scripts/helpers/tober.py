@@ -234,7 +234,7 @@ async def click_target_center_async(target: Target, max_attempts=20, attempt_del
 
 def verify_target_exists(target: Target, confidence=0.9):
     ''' Check for an identified template on the monitor
-        target = template
+        target = template 
     '''
     try:
 

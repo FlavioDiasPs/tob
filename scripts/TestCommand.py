@@ -10,14 +10,25 @@ import cv2
 from mss import mss, tools
 import numpy as np
 
+import bots.lunarush as luna
 from helpers.tober import Target, Area
 
 
-time.sleep(3)
-asyncio.run(tob.scroll(updown=-380, repeats=3))
-time.sleep(1)
-asyncio.run(tob.scroll(updown=-380, repeats=3))
 
+a = (1, 2)
+
+print(*a)
+
+def teste(a, b):
+    a = 1
+
+teste(*a)
+
+# while(True):
+#     print(tob.verify_target_exists(luna.in_battle_versus, confidence=0.7))
+#     time.sleep(0.5)
+
+    
 
 
 # while(True):
@@ -40,21 +51,3 @@ asyncio.run(tob.scroll(updown=-380, repeats=3))
 #     tools.to_png(grabed.rgb, grabed.size, level=6, output='out.png')
 
 #     screenshot = np.array(grabed)
-
-
-# import pyautogui
-# import math
-
-# # Radius 
-# R = 400
-# # measuring screen size
-# (x,y) = pyautogui.size()
-# # locating center of the screen
-# (X,Y) = pyautogui.position(x/2,y/2)
-# # offsetting by radius 
-# pyautogui.moveTo(X+R,Y)
-
-# for i in range(360):
-#     # setting pace with a modulus 
-#     if i%6==0:
-#        pyautogui.moveTo(X+R*math.cos(math.radians(i)),Y+R*math.sin(math.radians(i)))

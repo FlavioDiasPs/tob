@@ -1,7 +1,17 @@
+lunarush:
+  window_name: tob_lunarush
+  parameters:
+    extra_wait_time_during_dawn_sec: 3600
+    battle_not_ended_max_retries: 5
+  intervals:
+    wait_for_battle_sec: 45
+    wait_for_energy_sec: 7200
+    battle_not_ended_yet_sec: 10
+
 cryptopiece:
   window_name: tob_cryptopiece
   intervals:
-    wait_for_stamina_sec: 3600
+    wait_for_stamina_sec: 1800
 
 agrofarm:
   window_name: tob_agrofarm
@@ -11,15 +21,5 @@ agrofarm:
 bombcrypto:
   window_name: tob_bombcrypto
   intervals:
-    send_heroes_to_work_sec: 3600
+    send_heroes_to_work_sec: 1800
     refresh_heroes_positions_sec: 600
-
-lunarush:
-  window_name: tob_lunarush
-  parameters:
-    extra_wait_time_during_dawn_sec: 3600
-    battle_not_ended_max_retries: 5
-  intervals:
-    wait_for_battle_sec: 35
-    wait_for_energy_sec: 7200
-    battle_not_ended_yet_sec: 10
