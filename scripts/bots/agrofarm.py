@@ -45,6 +45,7 @@ async def run_bot(next_action: Prodict):
         win.maximize()
         win.activate()
 
+        tob.close_windows_by_name('Metamask Notification')
         await get_game_ready()
         crop_plant_next_schedule = await crop_and_plant()
 
