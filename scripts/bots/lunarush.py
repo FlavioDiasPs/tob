@@ -64,7 +64,6 @@ async def run_bot(next_action: Prodict):
         win.activate()
 
         await asyncio.sleep(2)
-        tob.close_windows_by_name('Metamask Notification')
         next_schedule = await heroes_battle()
         next_action = await calculate_next_schedule(next_schedule, next_action)
    

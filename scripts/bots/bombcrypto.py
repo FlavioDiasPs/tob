@@ -43,7 +43,6 @@ async def run_bot(next_action: Prodict):
         win.maximize()
         win.activate()
     
-        tob.close_windows_by_name('Metamask Notification')
         await handle_error_message()
         await check_load_screen()
         await get_game_ready()

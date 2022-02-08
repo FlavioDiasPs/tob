@@ -47,8 +47,10 @@ async def main():
         p.info('Taking active window')
         current_active_window = pyautogui.getActiveWindow()
         pyautogui.FAILSAFE = False
-        pyautogui.press('space')
 
+        pyautogui.press('space')
+        tob.close_windows_by_name('Metamask Notification')
+        
         await run(next_action)
 
         current_active_window.activate()
