@@ -1,1 +1,1 @@
-python scripts/start_tob.py
+python scripts/tob.py

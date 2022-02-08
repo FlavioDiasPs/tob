@@ -1,3 +1,6 @@
+tob:
+  press_space_before_and_after_bot: False
+
 lunarush:
   window_name: tob_lunarush
   parameters:

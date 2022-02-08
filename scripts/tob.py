@@ -1,4 +1,5 @@
 import traceback
+from weakref import finalize
 import pyautogui
 import pygetwindow
 import asyncio
@@ -31,9 +32,10 @@ from helpers.printfier import Printer
 # }
 
 last_window_amount_by_bot = Prodict({})
+current_active_window = None
 all_actions = Prodict({})
-p = Printer(bot_name='TOB')
 
+p = Printer(bot_name='TOB')
 init(autoreset=True, convert=True)
 
 async def main():
@@ -45,28 +47,44 @@ async def main():
 
     while True:
         p.info('Taking active window')
-        current_active_window = pyautogui.getActiveWindow()
-        pyautogui.FAILSAFE = False
-
-        pyautogui.press('space')
-        tob.close_windows_by_name('Metamask Notification')
         
-        await run(next_action)
+        all_bots_configs = preparation()
+        await run(next_action, all_bots_configs)
 
-        current_active_window.activate()
-        pyautogui.press('space')
-
-        next_actions = get_next_actions()
+        next_actions = finalization(all_bots_configs)
         next_action = next_actions[0]
 
         write_next_actions_sumary(next_actions)
         await wait_next_action_time(next_actions=next_actions)
 
 
-async def run(next_action: Prodict):
+def preparation():
+    global current_active_window
+
+    current_active_window = pyautogui.getActiveWindow()
+    pyautogui.FAILSAFE = False
 
     p.info('Loading configs')
     all_bots_configs = Prodict(yaml.safe_load(open('config.yaml', 'r')))
+
+    if all_bots_configs.press_space_before_and_after_bot:
+        pyautogui.press('space')
+
+    tob.close_windows_by_name('Metamask Notification')
+
+    return all_bots_configs
+
+
+def finalization(all_bots_configs: Prodict):
+    current_active_window.activate()
+
+    if all_bots_configs.press_space_before_and_after_bot:
+        pyautogui.press('space')
+
+    return get_next_actions()
+
+
+async def run(next_action: Prodict, all_bots_configs: Prodict):
 
     if next_action:
         await run_bot_windows(next_action)
