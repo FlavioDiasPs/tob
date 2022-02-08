@@ -12,28 +12,16 @@ import numpy as np
 
 import bots.lunarush as luna
 from helpers.tober import Target, Area
+from prodict import Prodict
+
+# time.sleep(3)
+# asyncio.run(tob.scroll(updown=-33, repeats=3))
 
 
 
-a = (1, 2)
-
-print(*a)
-
-def teste(a, b):
-    a = 1
-
-teste(*a)
-
-# while(True):
-#     print(tob.verify_target_exists(luna.in_battle_versus, confidence=0.7))
-#     time.sleep(0.5)
-
-    
-
-
-# while(True):
-#     print(pyautogui.mouseinfo.position())
-#     time.sleep(0.5)
+while(True):
+    print(pyautogui.mouseinfo.position())
+    time.sleep(0.5)
 
 # search_area = tob.Area(50, 520, 220, 100)
 

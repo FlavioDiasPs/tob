@@ -34,30 +34,43 @@ p = Printer(bot_name='BombCrypto')
 async def run_bot(next_action: Prodict):
 
     p.title('Starting BombCrypto')
+    win = next_action.window
 
-    await handle_error_message()
-    await check_load_screen()
-    await get_game_ready()
-    await handle_error_message()
+    try:
+        # area = Area(win.left, win.top, win.width, win.height)
+        # win.resizeTo(game_area.width, game_area.height)
+        # win.moveTo(game_area.left, game_area.top)
+        win.maximize()
+        win.activate()
+    
+        await handle_error_message()
+        await check_load_screen()
+        await get_game_ready()
+        await handle_error_message()
 
-    now = get_now()  
-    next_action = adjust_next_action(next_action)          
-    send_heroes_interval_sec = next_action.config.intervals.send_heroes_to_work_sec
-    send_heroes_schedule_diff = now - next_action.schedules.send_heroes_to_work
+        now = get_now()  
+        next_action = adjust_next_action(next_action)          
+        send_heroes_interval_sec = next_action.config.intervals.send_heroes_to_work_sec
+        send_heroes_schedule_diff = now - next_action.schedules.send_heroes_to_work
 
-    refresh_heroes_interval_sec = next_action.config.intervals.refresh_heroes_positions_sec
-    refresh_heroes_schedule_diff = now - next_action.schedules.refresh_heroes_positions
+        refresh_heroes_interval_sec = next_action.config.intervals.refresh_heroes_positions_sec
+        refresh_heroes_schedule_diff = now - next_action.schedules.refresh_heroes_positions
 
-    if send_heroes_schedule_diff > 0:
-        await send_heroes_to_work()
-        next_action.schedules.send_heroes_to_work = get_now() + send_heroes_interval_sec
-        next_action.schedules.refresh_heroes_positions = get_now() + refresh_heroes_interval_sec
+        if send_heroes_schedule_diff > 0:
+            await send_heroes_to_work()
+            next_action.schedules.send_heroes_to_work = get_now() + send_heroes_interval_sec
+            next_action.schedules.refresh_heroes_positions = get_now() + refresh_heroes_interval_sec
 
-    elif refresh_heroes_schedule_diff > 0:
-        await refresh_heroes()
-        next_action.schedules.refresh_heroes_positions = get_now() + refresh_heroes_interval_sec
+        elif refresh_heroes_schedule_diff > 0:
+            await refresh_heroes()
+            next_action.schedules.refresh_heroes_positions = get_now() + refresh_heroes_interval_sec
 
-    await handle_error_message()
+        await handle_error_message()
+
+    finally:
+        # win.moveTo(area.left, area.top)
+        # win.resizeTo(area.width, area.height)
+        win.restore()   
 
     return next_action
 
@@ -94,7 +107,7 @@ async def handle_error_message():
     if tob.verify_target_exists(text_error_img):
         p.info('Handling error message text_error_img')
         await tob.refresh_page()
-        raise BombBotError(" ** BombCrypto displayed an error message: text_error_img. Restarting...")
+        raise BombBotError(" ** BombCryp to displayed an error message: text_error_img. Restarting...")
 
     elif tob.verify_target_exists(bomb_crypto_unavailable_img):
         p.info('Handling error message bomb_crypto_unavailable')

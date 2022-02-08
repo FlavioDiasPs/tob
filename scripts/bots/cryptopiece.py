@@ -32,12 +32,25 @@ p = Printer("CryptoPiece")
 async def run_bot(next_action: Prodict):
 
     p.title('Starting CryptoPiece')
+    win = next_action.window
 
-    await get_game_ready()
-    await merc_battle()
+    try:
+        # area = Area(win.left, win.top, win.width, win.height)
+        # win.resizeTo(game_area.width, game_area.height)
+        # win.moveTo(game_area.left, game_area.top)
+        win.maximize()
+        win.activate()
 
-    wait_for_stamina = next_action.config.intervals.wait_for_stamina_sec
-    next_action.schedules.wait_for_stamina = get_now() + wait_for_stamina           
+        await get_game_ready()
+        await merc_battle()
+
+        wait_for_stamina = next_action.config.intervals.wait_for_stamina_sec
+        next_action.schedules.wait_for_stamina = get_now() + wait_for_stamina    
+
+    finally:
+        # win.moveTo(area.left, area.top)
+        # win.resizeTo(area.width, area.height)
+        win.restore()       
 
     return next_action
 

@@ -135,25 +135,17 @@ def get_bot_windows(window_name: str):
 
 async def run_single_action(next_action: Prodict):
     p.info('Running action')
-    
-    await tob.retry_async(initialize_bot_window, [next_action.window], 100, 0.2)    
-    result_action = await wrap_bot_function(next_action)
-    next_action.window.restore()
-
-    return result_action
+    return await wrap_bot_function(next_action)
 
 
 async def run_all_windows(bot_windows, next_action: Prodict):
-    result_actions = []
+    result_actions = []  
 
     p.info('Running action') 
     for bot_window in bot_windows:
-        await tob.retry_async(initialize_bot_window, [bot_window], 100, 0.2)
 
+        next_action.window = bot_window
         result_action = Prodict(await wrap_bot_function(next_action))
-        
-        bot_window.restore()
-        result_action.window = bot_window
         result_actions.append(result_action)
 
     return result_actions
@@ -188,10 +180,12 @@ async def wrap_bot_function(next_action: Prodict):
 
 
 async def initialize_bot_window(bot_window):
-    bot_window.maximize()
-    bot_window.activate()
+    pass
+    # bot_window.maximize()
+    # bot_window.activate()
 
-    await asyncio.sleep(2)
+
+    # await asyncio.sleep(2)
     
 
 def get_action_index_by_window(bot_name: str, window):

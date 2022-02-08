@@ -36,14 +36,27 @@ p = Printer("AgroFarm")
 async def run_bot(next_action: Prodict):
 
     p.title('Starting AgroFarm')
+    win = next_action.window
 
-    await get_game_ready()
-    crop_plant_next_schedule = await crop_and_plant()
+    try:
+        # area = Area(win.left, win.top, win.width, win.height)
+        # win.resizeTo(game_area.width, game_area.height)
+        # win.moveTo(game_area.left, game_area.top)
+        win.maximize()
+        win.activate()
 
-    if crop_plant_next_schedule == None:
-        crop_plant_next_schedule = next_action.config.intervals.wait_time_when_no_crop_left_sec
+        await get_game_ready()
+        crop_plant_next_schedule = await crop_and_plant()
 
-    next_action.schedules.crop_plant_schedule = get_now() + crop_plant_next_schedule         
+        if crop_plant_next_schedule == None:
+            crop_plant_next_schedule = next_action.config.intervals.wait_time_when_no_crop_left_sec
+
+        next_action.schedules.crop_plant_schedule = get_now() + crop_plant_next_schedule   
+
+    finally:
+        # win.moveTo(area.left, area.top)
+        # win.resizeTo(area.width, area.height)
+        win.restore()       
 
     return next_action
 

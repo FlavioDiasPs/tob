@@ -12,53 +12,65 @@ import helpers.metamask as metamask
 from helpers.tober import Area, Target
 from helpers.printfier import Printer
 
-loading = Target(cv2.imread('templates/lunarush/loading.png'))
-helios_brand = Target(cv2.imread('templates/lunarush/helios_brand.png'))
-btn_login_with_metamask = Target(cv2.imread('templates/lunarush/btn_login_with_metamask.png'))
 
-btn_boss_hunt_start_game = Target(cv2.imread('templates/lunarush/btn_boss_hunt_start_game.png'), Area(230, 180, 290, 360))
-btn_tap_to_open = Target(cv2.imread('templates/lunarush/btn_tap_to_open.png'), Area(580, 550,  210, 70))
-btn_available_boss = Target(cv2.imread('templates/lunarush/btn_available_boss.png'))
+game_area = Area(-8, -8, 685 , 520)
+p = Printer("LunaRush")
+   
+battle_not_ended_yet_sec = 0
+wait_for_battle_sec = 1
+wait_for_energy_sec = 2 
 
-in_battle_versus = Target(cv2.imread('templates/lunarush/in_battle_versus.png'), Area(650, 100, 75, 60))
-btn_boss_hunt = Target(cv2.imread('templates/lunarush/btn_boss_hunt.png'), Area(920, 560, 210, 80))
+loading = Target(cv2.imread('templates/lunarush/loading.png'), game_area)
+helios_brand = Target(cv2.imread('templates/lunarush/helios_brand.png'), game_area)
+btn_login_with_metamask = Target(cv2.imread('templates/lunarush/btn_login_with_metamask.png'), game_area)
+
+btn_boss_hunt_start_game = Target(cv2.imread('templates/lunarush/btn_boss_hunt_start_game.png'), Area(60, 145, 145, 215))
+btn_tap_to_open = Target(cv2.imread('templates/lunarush/btn_tap_to_open.png'), game_area)
+btn_available_boss = Target(cv2.imread('templates/lunarush/btn_available_boss.png'), game_area)
+
+in_battle_versus = Target(cv2.imread('templates/lunarush/in_battle_versus.png'), Area(315, 90, 40, 30))
+btn_boss_hunt = Target(cv2.imread('templates/lunarush/btn_boss_hunt.png'), Area(490, 390, 150, 50))
  
-selected_hero_no_energy = Target(cv2.imread('templates/lunarush/selected_hero_no_energy.png'), Area(425, 315, 565, 50))
-selected_hero_energy = Target(cv2.imread('templates/lunarush/selected_hero_energy.png'), Area(425, 315, 565, 50))
+selected_hero_no_energy = Target(cv2.imread('templates/lunarush/selected_hero_no_energy.png'), Area(160, 230, 370, 30))
+selected_hero_energy = Target(cv2.imread('templates/lunarush/selected_hero_energy.png'), Area(160, 230, 370, 30))
 
-unselected_hero_energy = Target(cv2.imread('templates/lunarush/unselected_hero_energy.png'), Area(180, 200, 240, 410))
-unselected_hero_energy_part2 = Target(cv2.imread('templates/lunarush/unselected_hero_energy.png'), Area(180, 350, 240, 280))
+unselected_hero_energy = Target(cv2.imread('templates/lunarush/unselected_hero_energy.png'), Area(15, 150, 135, 280))
+unselected_hero_energy_part2 = Target(cv2.imread('templates/lunarush/unselected_hero_energy.png'), Area(20, 250, 130, 180))
 
-notice = Target(cv2.imread('templates/lunarush/notice.png'))
-defeat = Target(cv2.imread('templates/lunarush/defeat.png'))
-victory = Target(cv2.imread('templates/lunarush/victory.png'))
-error = Target(cv2.imread('templates/lunarush/error.png'))
-window_is_open = Target(cv2.imread('templates/lunarush/window_is_open.png'))
-
-loading_1 = Target(cv2.imread('templates/lunarush/in_game_loading.png'), Area(1100, 565, 60, 65))
-loading_2 = Target(cv2.imread('templates/lunarush/in_game_loading_2.png'), Area(1100, 565, 60, 65))
+notice = Target(cv2.imread('templates/lunarush/notice.png'), game_area) 
+defeat = Target(cv2.imread('templates/lunarush/defeat.png'), game_area  )
+victory = Target(cv2.imread('templates/lunarush/victory.png'), game_area)
+error = Target(cv2.imread('templates/lunarush/error.png'), game_area)
+window_is_open = Target(cv2.imread('templates/lunarush/window_is_open.png'), game_area)
+ 
+loading_1 = Target(cv2.imread('templates/lunarush/in_game_loading.png'), Area(600, 390, 40, 40)) 
+loading_2 = Target(cv2.imread('templates/lunarush/in_game_loading_2.png'), Area(600, 390, 40, 40)) 
 
 
 class LunaRushError(Exception):
     """Raised when LunaRush shows an error""" 
     pass
 
-
-game_area = Area()
-p = Printer("LunaRush")
-  
-battle_not_ended_yet_sec = 0
-wait_for_battle_sec = 1
-wait_for_energy_sec = 2
-
   
 async def run_bot(next_action: Prodict):
     
     p.title('Starting LunaRush')
+    win = next_action.window
 
-    next_schedule = await heroes_battle()
-    next_action = await calculate_next_schedule(next_schedule, next_action)
+    try:
+        area = Area(win.left, win.top, win.width, win.height)
+        win.resizeTo(game_area.width, game_area.height)
+        win.moveTo(game_area.left, game_area.top)
+        win.activate()
+
+        await asyncio.sleep(2)
+        next_schedule = await heroes_battle()
+        next_action = await calculate_next_schedule(next_schedule, next_action)
    
+    finally:
+        win.moveTo(area.left, area.top)
+        win.resizeTo(area.width, area.height)
+  
     return next_action
 
 
@@ -74,14 +86,14 @@ async def heroes_battle():
         p.info('Battle is not finished yet, waiting an extra time')
         return battle_not_ended_yet_sec
 
-    if tob.verify_target_exists(window_is_open) == False:   
+    if tob.verify_target_exists(window_is_open) == False:     
         raise Exception('The window was not open')
 
     await handle_start()
     await handle_preparation()
 
     p.info('Removing selected heroes without energy')
-    await tob.click_all_targets_center_async(selected_hero_no_energy, x_offset=random.randint(65, 85))   
+    await tob.click_all_targets_center_async(selected_hero_no_energy, x_offset=random.randint(50, 70))   
     await asyncio.sleep(3)
 
     return await prepare_and_fight()
@@ -136,7 +148,7 @@ async def handle_start():
     
     elif tob.safe_retry(tob.verify_target_exists, [btn_tap_to_open], expected_result=True):  
         p.info('Taking rewards from battle')
-        
+         
         while tob.anyone(tob.verify_target_exists, [defeat, victory]):
             await tob.click_target_center_async(btn_tap_to_open, sleep_after_click_sec=2)
             await tob.click_location_async(x=random.randint(250, 350), y=random.randint(250, 350))
@@ -167,19 +179,19 @@ async def prepare_and_fight():
         await run_battle()     
         return wait_for_battle_sec
 
-    await tob.scroll(updown=-380, repeats=3)
+    await tob.hold_move_async(150, 200, 154, 296)
     amount_heroes_selected = await add_heroes_to_fight(unselected_hero_energy, amount_heroes_selected)
         
     if amount_heroes_selected >= 3:
         await run_battle() 
         return wait_for_battle_sec 
 
-    await tob.scroll(updown=-380, repeats=3)  
+    await tob.hold_move_async(150, 296, 154, 370)
     amount_heroes_selected = await add_heroes_to_fight(unselected_hero_energy_part2, amount_heroes_selected)    
     
     await tob.scroll(updown=500, repeats=5)
 
-    if amount_heroes_selected <= 0:
+    if amount_heroes_selected <= 0: 
         return wait_for_energy_sec
     else: 
         await run_battle()
@@ -188,17 +200,18 @@ async def prepare_and_fight():
 
 async def add_heroes_to_fight(target, amount_heroes_selected = 0):
     
-    tob.move(random.uniform(250, 300), random.uniform(250,  300))
+    tob.move(random.uniform(30, 120), random.uniform(150,  190))
 
     p.info('Selecting more heroes to participate in battle')
-    heroes_locations = await tob.find_targets_centers_async(target, confidence=0.90)
+    heroes_locations = await tob.find_targets_centers_async(target, confidence=0.85)
 
     for hero_location in heroes_locations:        
-
-        await tob.click_location_async(x = hero_location[0], y = hero_location[1], y_offset=random.randint(-70, -50))
+  
+        await tob.click_location_async(x=hero_location[0], y=hero_location[1], 
+                                        y_offset=random.randint(-70, -50), sleep_after_click_sec=1)
         await wait_loading()
 
-        amount_heroes_selected += 1
+        amount_heroes_selected += 1  
         if amount_heroes_selected == 3:
             return amount_heroes_selected
 

@@ -36,16 +36,17 @@ class Target:
 
 # window
 async def refresh_page():
-    pyautogui.hotkey('ctrl', 'f5')
+    pyautogui.hotkey('ctrl', 'f5') 
     pyautogui.press('enter')
     await asyncio.sleep(4)
-
+  
 
 async def scroll(updown = -1,  repeats = 20, sleep_after_scroll = 0.3):
     ''' Scroll the mouse '''
     
     for i in range(0, repeats):
         pyautogui.scroll(updown)
+        await asyncio.sleep(0.06)
 
     await asyncio.sleep(sleep_after_scroll)
 
@@ -115,8 +116,8 @@ async def find_targets_centers_async(target: Target, max_attempts=10, attempt_de
 
 
 async def click_location_async(x, y, x_offset = 0, y_offset = 0, 
-                min_x_precision_offset = 1, max_x_precision_offset = 20,
-                min_y_precision_offset = 1, max_y_precision_offset = 20,
+                min_x_precision_offset = 1, max_x_precision_offset = 10,
+                min_y_precision_offset = 1, max_y_precision_offset = 10,
                 min_move_duration = 0.1, max_move_duration = 0.3,
                 min_click_duration = 0.1, max_click_duration = 0.25,
                 sleep_after_click_sec = 0.2):
@@ -137,10 +138,39 @@ async def click_location_async(x, y, x_offset = 0, y_offset = 0,
     await asyncio.sleep(sleep_after_click_sec)
 
 
+async def hold_move_async(start_x, start_y, end_x, end_y, 
+                min_x_precision_offset = 1, max_x_precision_offset = 2,
+                min_y_precision_offset = 1, max_y_precision_offset = 2,
+                min_move_duration = 0.5, max_move_duration = 0.7,
+                sleep_after_click_sec = 0.2):
+ 
+    rnd_x = start_x + random.uniform(min_x_precision_offset, max_x_precision_offset)
+    rnd_y = start_y + random.uniform(min_y_precision_offset, max_y_precision_offset)
+
+    rnd_end_x = end_x + random.uniform(min_x_precision_offset, max_x_precision_offset)
+    rnd_end_y = end_y + random.uniform(min_y_precision_offset, max_y_precision_offset)
+
+    moreless = random.randint(-1, 1) 
+    if moreless == 0: moreless = 1
+ 
+    side_move_x = rnd_x + random.uniform(20, 40) * moreless
+    side_move_y = rnd_y + random.uniform(20, 40) * moreless
+
+    pyautogui.moveTo(side_move_x, side_move_y, random.uniform(0.2, 0.3), pyautogui.easeInBack)
+    
+    pyautogui.moveTo(rnd_x, rnd_y, random.uniform(min_move_duration, max_move_duration), pyautogui.easeOutBounce)
+    pyautogui.mouseDown()
+    
+    pyautogui.moveTo(rnd_end_x, rnd_end_y, random.uniform(min_move_duration, max_move_duration), pyautogui.easeOutBounce)
+    pyautogui.mouseUp()
+
+    await asyncio.sleep(sleep_after_click_sec)
+
+
 async def click_all_targets_center_async(target: Target, max_attempts=10, 
                                 x_offset = 0, y_offset = 0,
-                                min_x_precision_offset = 1, max_x_precision_offset = 20,
-                                min_y_precision_offset = 1, max_y_precision_offset = 20,
+                                min_x_precision_offset = 1, max_x_precision_offset = 10,
+                                min_y_precision_offset = 1, max_y_precision_offset = 10,
                                 sleep_after_click_sec = 1, confidence=0.9):
     ''' Click on an identified image
         target = template
@@ -169,8 +199,8 @@ async def click_all_targets_center_async(target: Target, max_attempts=10,
     
 
 async def safe_click_target_center_async(target: Target, max_attempts=10, attempt_delay=0.2,
-                                min_x_precision_offset = 1, max_x_precision_offset = 20,
-                                min_y_precision_offset = 1, max_y_precision_offset = 20,
+                                min_x_precision_offset = 1, max_x_precision_offset = 10,
+                                min_y_precision_offset = 1, max_y_precision_offset = 10,
                                 sleep_after_click_sec = 0.2, confidence=0.9):
     ''' Click on an identified image
         target = template
@@ -439,6 +469,7 @@ async def safe_retry_async(f, params: List[Any]=None, max_attempts=20, attempt_d
 
 def anyone(f, params: List):
     return any(f(param) for param in params)
+
 
 def anyone_multi_param(f, params: List):
     return any(f(*param) for param in params)
