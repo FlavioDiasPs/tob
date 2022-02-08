@@ -1,9 +1,6 @@
 import traceback
-from weakref import finalize
 import pyautogui
-import pygetwindow
 import asyncio
-import os
 import yaml
 
 import bots.bombcrypto as bombcrypto_bot
@@ -11,12 +8,15 @@ import bots.agrofarm as agrofarm_bot
 import bots.cryptopiece as cryptopiece_bot
 import bots.lunarush as lunarush_bot
 import helpers.tober as tob
+import handlers.action as action
+
 from prodict import Prodict
 from colorama import init
 from datetime import datetime
 from typing import List
 
 from helpers.printfier import Printer
+from runner import Runner
 
 
 # action = {
@@ -31,9 +31,6 @@ from helpers.printfier import Printer
 #     'bot_name': str
 # }
 
-last_window_amount_by_bot = Prodict({})
-current_active_window = None
-all_actions = Prodict({})
 
 p = Printer(bot_name='TOB')
 init(autoreset=True, convert=True)
@@ -42,35 +39,35 @@ async def main():
 
     await boot(3)
     p.title('Starting TOB - The Only Bot')
-
-    next_action = None
+    runner = Runner()
 
     while True:
         p.info('Taking active window')
         
-        all_bots_configs = preparation()
-        await run(next_action, all_bots_configs)
+        runner.all_configs = preparation()
+        runner = await run(runner)
 
-        next_actions = finalization(all_bots_configs)
-        next_action = next_actions[0]
+        finalization(runner.all_configs)
+        next_actions = get_next_actions(runner.all_actions)
+        runner.next_action = next_actions[0]
 
-        write_next_actions_sumary(next_actions)
+        write_next_actions_summary(next_actions)
         await wait_next_action_time(next_actions=next_actions)
 
 
 def preparation():
     global current_active_window
+    
+    p.info('Preparing to run')
 
-    current_active_window = pyautogui.getActiveWindow()
     pyautogui.FAILSAFE = False
-
-    p.info('Loading configs')
-    all_bots_configs = Prodict(yaml.safe_load(open('config.yaml', 'r')))
-
-    if all_bots_configs.press_space_before_and_after_bot:
-        pyautogui.press('space')
-
     tob.close_windows_by_name('Metamask Notification')
+    
+    current_active_window = pyautogui.getActiveWindow()
+    all_bots_configs = Prodict(yaml.safe_load(open('config.yaml', 'r')))
+    
+    if all_bots_configs.tob['press_space_before_and_after_bot']:
+        pyautogui.press('space')
 
     return all_bots_configs
 
@@ -78,46 +75,30 @@ def preparation():
 def finalization(all_bots_configs: Prodict):
     current_active_window.activate()
 
-    if all_bots_configs.press_space_before_and_after_bot:
+    if all_bots_configs.tob['press_space_before_and_after_bot']:
         pyautogui.press('space')
 
-    return get_next_actions()
 
+async def run(runner: Runner):
 
-async def run(next_action: Prodict, all_bots_configs: Prodict):
-
-    if next_action:
-        await run_bot_windows(next_action)
+    if runner.next_action:
+        await action.run_action(runner)
 
     else:
-        for bot_name in all_bots_configs:
-            next_action = fill_next_action(next_action, bot_name, all_bots_configs)
-            await run_bot_windows(next_action)
+        bot_configs = [bot_name for bot_name in runner.all_configs if bot_name != 'tob']
 
-  
-async def run_bot_windows(next_action: Prodict):
+        for bot_name in bot_configs:
+            runner.next_action = fill_next_action(runner.all_configs, bot_name)
+            await action.run_action(runner)
 
-    p.info('Taking bot windows')
-    bot_windows = get_bot_windows(next_action.config.window_name)
-
-    bot_name_not_in_the_previous_list = not (next_action.bot_name in last_window_amount_by_bot)
-
-    if (bot_name_not_in_the_previous_list or last_window_amount_by_bot[next_action.bot_name] != len(bot_windows)):
-        all_actions[next_action.bot_name] = await run_all_windows(bot_windows, next_action)
-
-    else:
-        result = await run_single_action(next_action=next_action)
-        index = get_action_index_by_window(bot_name=next_action.bot_name, window=result.window)
-        all_actions[next_action.bot_name][index] = result
-
-    last_window_amount_by_bot[next_action.bot_name] = len(bot_windows)
+    return runner
 
 
-def fill_next_action(next_action: Prodict, bot_name: str, all_bots_configs: Prodict):
+def fill_next_action(all_configs: Prodict, bot_name: str):
     next_action = Prodict({})
-    next_action.schedules = Prodict({}) 
     next_action.bot_name = bot_name
-    next_action.config = Prodict(all_bots_configs[bot_name])
+    next_action.schedules = Prodict({}) 
+    next_action.config = Prodict(all_configs[bot_name])
 
     if bot_name == 'bombcrypto':
         next_action.function = bombcrypto_bot.run_bot
@@ -133,91 +114,7 @@ def fill_next_action(next_action: Prodict, bot_name: str, all_bots_configs: Prod
     return next_action
 
 
-async def boot(duration):
-    while duration >= 0:
-        p.r_info(f'Starting in {duration} seconds(s)..')
-        await asyncio.sleep(1)
-        duration -= 1
-
-
-def get_bot_windows(window_name: str):
-    amount_windows = 0
-    while(amount_windows <= 0):
-        windows = pygetwindow.getWindowsWithTitle(window_name)
-        amount_windows = len(windows)
-
-        if amount_windows <= 0:
-            print(f"Rename all the windows to: {window_name}")
-            os.system("pause")
-
-    return windows
-
-
-async def run_single_action(next_action: Prodict):
-    p.info('Running action')
-    return await wrap_bot_function(next_action)
-
-
-async def run_all_windows(bot_windows, next_action: Prodict):
-    result_actions = []  
-
-    p.info('Running action') 
-    for bot_window in bot_windows:
-
-        next_action.window = bot_window
-        result_action = Prodict(await wrap_bot_function(next_action))
-        result_actions.append(result_action)
-
-    return result_actions
-
-
-async def wrap_bot_function(next_action: Prodict):
-    retry_count = 0
-    retry_limit = 4
-    retry_schedule_name = f'retry_failed_{next_action.bot_name}'
-
-    param_action = Prodict(next_action.copy())
-    bot_function = next_action.function
-    
-    while(retry_count <= retry_limit):
-        try:
-
-            if retry_schedule_name in param_action.schedules:
-                param_action.schedules = Prodict({})
-
-            return await bot_function(param_action)
-
-        except:
-            traceback.print_exc()
-            await asyncio.sleep(2)
-            retry_count += 1
-
-    now = datetime.timestamp(datetime.now())
-    next_action.schedules = Prodict({})
-    next_action.schedules[retry_schedule_name] = now + 30 * 60
-
-    return next_action
-
-
-async def initialize_bot_window(bot_window):
-    pass
-    # bot_window.maximize()
-    # bot_window.activate()
-
-
-    # await asyncio.sleep(2)
-    
-
-def get_action_index_by_window(bot_name: str, window):
-
-    for i in range(0,  len(all_actions[bot_name])):
-        if all_actions[bot_name][i]["window"] == window:
-            return i
-
-    raise Exception("Couldn't find the the index for the window")
-
-
-def write_next_actions_sumary(next_actions: List[Prodict]):
+def write_next_actions_summary(next_actions: List[Prodict]):
 
     p.title('Actions in the line')
     for i in range(0, len(next_actions)):
@@ -272,16 +169,27 @@ def add_extra_wait_time_during_dawn(next_action: Prodict, next_action_schedule_s
     return next_action_schedule_sec
 
 
-def get_next_actions():
+def get_next_actions(all_actions):
     actions = []
+
     for key in all_actions:
         actions = actions + all_actions[key]
 
-    next_actions = sorted(actions,
-                            key=lambda a: min(a['schedules'].items(), key=lambda x: x[1])[1],
-                            reverse=False)
+    next_actions = sorted(
+                            actions,
+                            key=lambda a: min(a['schedules'].items(), 
+                            key=lambda x: x[1])[1],
+                            reverse=False
+                        )
 
     return next_actions
+
+
+async def boot(duration):
+    while duration >= 0:
+        p.r_info(f'Starting in {duration} seconds(s)..')
+        await asyncio.sleep(1)
+        duration -= 1
 
 
 while(True):
@@ -291,6 +199,3 @@ while(True):
 
     except:
         traceback.print_exc()
-        last_window_amount_by_bot = Prodict({})
-        all_actions = Prodict({})
-
