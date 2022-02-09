@@ -193,7 +193,7 @@ async def send_heroes_to_work():
         heroes_go_work += click_go_work()
 
         if scrolls != 2:
-            await tob.scroll()
+            await tob.scroll(-1, 20, sleep_after_scroll=0)
 
         scrolls += 1
 

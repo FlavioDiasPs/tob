@@ -41,12 +41,11 @@ async def refresh_page():
     await asyncio.sleep(4)
   
 
-async def scroll(updown = -1,  repeats = 20, sleep_after_scroll = 0.3):
+async def scroll(updown = -1, repeats = 20, sleep_after_scroll = 0.3):
     ''' Scroll the mouse '''
     
     for i in range(0, repeats):
-        pyautogui.scroll(updown)
-        await asyncio.sleep(0.06)
+        pyautogui.scroll(clicks=updown)
 
     await asyncio.sleep(sleep_after_scroll)
 
