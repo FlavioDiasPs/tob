@@ -9,9 +9,10 @@ import helpers.tober as tob
 import helpers.metamask as metamask
 
 from helpers.printfier import Printer
-from helpers.tober import Target
+from helpers.tober import Target, Area
 
-btn_battlefield_img = Target(cv2.imread('templates/cryptopiece/btn_battlefield.png'))
+game_area = Area(-8, -8, 747, 570)
+
 btn_battlefield_merc_down_img = Target(cv2.imread('templates/cryptopiece/btn_battlefield_merc_down.png'))
 btn_battle_img = Target(cv2.imread('templates/cryptopiece/btn_battle.png'))
 btn_battlefield_battle_claim_img = Target(cv2.imread('templates/cryptopiece/btn_battlefield_battle_claim.png'))
@@ -35,10 +36,9 @@ async def run_bot(next_action: Prodict):
     win = next_action.window
 
     try:
-        # area = Area(win.left, win.top, win.width, win.height)
-        # win.resizeTo(game_area.width, game_area.height)
-        # win.moveTo(game_area.left, game_area.top)
-        win.maximize()
+        area = Area(win.left, win.top, win.width, win.height)
+        win.resizeTo(game_area.width, game_area.height)
+        win.moveTo(game_area.left, game_area.top)
         win.activate()
 
         await get_game_ready()
@@ -48,9 +48,8 @@ async def run_bot(next_action: Prodict):
         next_action.schedules.wait_for_stamina = get_now() + wait_for_stamina    
 
     finally:
-        # win.moveTo(area.left, area.top)
-        # win.resizeTo(area.width, area.height)
-        win.restore()       
+        win.moveTo(area.left, area.top)
+        win.resizeTo(area.width, area.height)      
 
     return next_action
 

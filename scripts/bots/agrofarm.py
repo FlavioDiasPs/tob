@@ -8,24 +8,26 @@ from prodict import Prodict
 import helpers.tober as tob
 import helpers.metamask as metamask
 from helpers.printfier import Printer
-from helpers.tober import Target
+from helpers.tober import Target, Area
 
-btn_connect = Target(cv2.imread('templates/agrofarm/btn_connect.png'))
-btn_disconnect = Target(cv2.imread('templates/agrofarm/btn_disconnect.png'))
-btn_choose_wallet = Target(cv2.imread('templates/agrofarm/btn_choose_wallet.png'))
-btn_my_farm = Target(cv2.imread('templates/agrofarm/btn_my_farm.png'))
-btn_collect = Target(cv2.imread('templates/agrofarm/btn_collect.png'))
-btn_ok = Target(cv2.imread('templates/agrofarm/btn_ok.png'))
-btn_my_seeds = Target(cv2.imread('templates/agrofarm/btn_my_seeds.png'))
-btn_crop = Target(cv2.imread('templates/agrofarm/btn_crop.png'))
-btn_plant_now = Target(cv2.imread('templates/agrofarm/btn_plant_now.png'))
-wait_0_minutes = Target(cv2.imread('templates/agrofarm/wait_0_minutes.png'))
-wait_1_minutes = Target(cv2.imread('templates/agrofarm/wait_1_minutes.png'))
-wait_2_minutes = Target(cv2.imread('templates/agrofarm/wait_2_minutes.png'))
-wait_3_minutes = Target(cv2.imread('templates/agrofarm/wait_3_minutes.png'))
-wait_4_minutes = Target(cv2.imread('templates/agrofarm/wait_4_minutes.png'))
-no_crops_left = Target(cv2.imread('templates/agrofarm/no_crops_left.png'))
-loading_amount_crops_left = Target(cv2.imread('templates/agrofarm/loading_amount_crops_left.png'))
+game_area = Area(-8, -8, 812 , 500)
+
+btn_connect = Target(cv2.imread('templates/agrofarm/btn_connect.png'), game_area)
+btn_disconnect = Target(cv2.imread('templates/agrofarm/btn_disconnect.png'), game_area)
+btn_choose_wallet = Target(cv2.imread('templates/agrofarm/btn_choose_wallet.png'), game_area)
+btn_my_farm = Target(cv2.imread('templates/agrofarm/btn_my_farm.png'), game_area)
+btn_collect = Target(cv2.imread('templates/agrofarm/btn_collect.png'), game_area)
+btn_ok = Target(cv2.imread('templates/agrofarm/btn_ok.png'), game_area)
+btn_my_seeds = Target(cv2.imread('templates/agrofarm/btn_my_seeds.png'), game_area)
+btn_crop = Target(cv2.imread('templates/agrofarm/btn_crop.png'), game_area)
+btn_plant_now = Target(cv2.imread('templates/agrofarm/btn_plant_now.png'), game_area)
+wait_0_minutes = Target(cv2.imread('templates/agrofarm/wait_0_minutes.png'), game_area)
+wait_1_minutes = Target(cv2.imread('templates/agrofarm/wait_1_minutes.png'), game_area)
+wait_2_minutes = Target(cv2.imread('templates/agrofarm/wait_2_minutes.png'), game_area)
+wait_3_minutes = Target(cv2.imread('templates/agrofarm/wait_3_minutes.png'), game_area)
+wait_4_minutes = Target(cv2.imread('templates/agrofarm/wait_4_minutes.png'), game_area)
+no_crops_left = Target(cv2.imread('templates/agrofarm/no_crops_left.png'), game_area)
+loading_amount_crops_left = Target(cv2.imread('templates/agrofarm/loading_amount_crops_left.png'), game_area)
 
 class AgroFarmError(Exception):
     """Raised when AgroFarm shows an error"""
@@ -39,10 +41,9 @@ async def run_bot(next_action: Prodict):
     win = next_action.window
 
     try:
-        # area = Area(win.left, win.top, win.width, win.height)
-        # win.resizeTo(game_area.width, game_area.height)
-        # win.moveTo(game_area.left, game_area.top)
-        win.maximize()
+        area = Area(win.left, win.top, win.width, win.height)
+        win.resizeTo(game_area.width, game_area.height)
+        win.moveTo(game_area.left, game_area.top)
         win.activate()
 
         await get_game_ready()
@@ -54,9 +55,8 @@ async def run_bot(next_action: Prodict):
         next_action.schedules.crop_plant_schedule = get_now() + crop_plant_next_schedule   
 
     finally:
-        # win.moveTo(area.left, area.top)
-        # win.resizeTo(area.width, area.height)
-        win.restore()       
+        win.moveTo(area.left, area.top)
+        win.resizeTo(area.width, area.height)
 
     return next_action
 

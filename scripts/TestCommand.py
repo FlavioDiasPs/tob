@@ -17,11 +17,16 @@ from prodict import Prodict
 # time.sleep(3)
 # asyncio.run(tob.scroll(updown=-33, repeats=3))
 
+win = pyautogui.getWindowsWithTitle('tob_bombcrypto')[0]
+print(win)
 
+# game_area = Area(-8, -8, 812 , 500)
+# win.resizeTo(game_area.width, game_area.height)
+# win.moveTo(game_area.left, game_area.top)
 
-while(True):
-    print(pyautogui.mouseinfo.position())
-    time.sleep(0.5)
+# while(True):
+#     print(pyautogui.mouseinfo.position())
+#     time.sleep(0.5)
 
 # search_area = tob.Area(50, 520, 220, 100)
 

@@ -5,24 +5,26 @@ import helpers.tober as tob
 import helpers.metamask as metamask
 
 from helpers.printfier import Printer
-from helpers.tober import Target
+from helpers.tober import Target, Area
 from datetime import datetime
 from prodict import Prodict
 
 
-btn_back_img = Target(cv2.imread('templates/bombcrypto/btn_back.png'))
-btn_heroes_img = Target(cv2.imread('templates/bombcrypto/btn_heroes.png'))
-btn_treasure_hunt_img = Target(cv2.imread('templates/bombcrypto/btn_treasure_hunt.png'))
-btn_go_work_img = Target(cv2.imread('templates/bombcrypto/btn_go_work.png'))
-btn_x_img = Target(cv2.imread('templates/bombcrypto/btn_x.png'))
-btn_connect_wallet_img = Target(cv2.imread('templates/bombcrypto/btn_connect_wallet.png'))
-btn_home_img = Target(cv2.imread('templates/bombcrypto/btn_home.png'))
-green_bar_img = Target(cv2.imread('templates/bombcrypto/green_bar.png'))
-text_error_img = Target(cv2.imread('templates/bombcrypto/text_error.png'))
-btn_bau_img = Target(cv2.imread('templates/bombcrypto/btn_bau.png'))
-bomb_crypto_unavailable_img = Target(cv2.imread('templates/bombcrypto/bomb_crypto_unavailable.png'))
-bomb_didnt_load_img = Target(cv2.imread('templates/bombcrypto/bomb_didnt_load.png'))
-loading_img = Target(cv2.imread('templates/bombcrypto/loading.png'))
+game_area = Area(-8, -8, 703, 557)
+
+btn_back_img = Target(cv2.imread('templates/bombcrypto/btn_back.png'), game_area)
+btn_heroes_img = Target(cv2.imread('templates/bombcrypto/btn_heroes.png'), game_area)
+btn_treasure_hunt_img = Target(cv2.imread('templates/bombcrypto/btn_treasure_hunt.png'), game_area)
+btn_go_work_img = Target(cv2.imread('templates/bombcrypto/btn_go_work.png'), game_area)
+btn_x_img = Target(cv2.imread('templates/bombcrypto/btn_x.png'), game_area)
+btn_connect_wallet_img = Target(cv2.imread('templates/bombcrypto/btn_connect_wallet.png'), game_area)
+btn_home_img = Target(cv2.imread('templates/bombcrypto/btn_home.png'), game_area)
+green_bar_img = Target(cv2.imread('templates/bombcrypto/green_bar.png'), game_area)
+text_error_img = Target(cv2.imread('templates/bombcrypto/text_error.png'), game_area)
+btn_bau_img = Target(cv2.imread('templates/bombcrypto/btn_bau.png'), game_area)
+bomb_crypto_unavailable_img = Target(cv2.imread('templates/bombcrypto/bomb_crypto_unavailable.png'), game_area)
+bomb_didnt_load_img = Target(cv2.imread('templates/bombcrypto/bomb_didnt_load.png'), game_area)
+loading_img = Target(cv2.imread('templates/bombcrypto/loading.png'), game_area)
 
 
 class BombBotError(Exception):
@@ -38,10 +40,9 @@ async def run_bot(next_action: Prodict):
     win = next_action.window
 
     try:
-        # area = Area(win.left, win.top, win.width, win.height)
-        # win.resizeTo(game_area.width, game_area.height)
-        # win.moveTo(game_area.left, game_area.top)
-        win.maximize()
+        area = Area(win.left, win.top, win.width, win.height)
+        win.resizeTo(game_area.width, game_area.height)
+        win.moveTo(game_area.left, game_area.top)
         win.activate()
     
         await handle_error_message()
@@ -69,9 +70,8 @@ async def run_bot(next_action: Prodict):
         await handle_error_message()
 
     finally:
-        # win.moveTo(area.left, area.top)
-        # win.resizeTo(area.width, area.height)
-        win.restore()   
+        win.moveTo(area.left, area.top)
+        win.resizeTo(area.width, area.height) 
 
     return next_action
 
@@ -157,7 +157,7 @@ async def check_game_loaded():
     attempts = 0
     max_attempts=100
 
-    p.info('Loading...')
+    p.info('Waiting loading...')
     while(attempts <= max_attempts):
         attempts += 1
 
@@ -211,7 +211,7 @@ async def send_heroes_to_work():
 def click_go_work():
     ''' Activate heroes that are being displayed on the monitor with green stamina '''
 
-    offset = 130
+    x_offset = 100
     not_working_green_bars = []
 
     green_bars = tob.locate_target(green_bar_img)
@@ -225,7 +225,7 @@ def click_go_work():
             center_x = w / 2
             center_y = h / 2
 
-            x = x + offset + center_x
+            x = x + x_offset + center_x
             y = y + center_y
 
             pyautogui.moveTo(x, y, 0.2)
