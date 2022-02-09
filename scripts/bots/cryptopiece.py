@@ -72,8 +72,8 @@ async def merc_battle():
     for (merc_pos_x, merc_pos_y) in mercs_centers:
         await tob.click_location_async(x=merc_pos_x, y=merc_pos_y, y_offset=-50, sleep_after_click_sec=2)
         
-        p.info('Starting Merc Battle')
-        while(tob.safe_retry(verify_able_to_batte, max_attempts=3, expected_result=True)):
+        p.info('Checking for available mercs')
+        while(tob.safe_retry(verify_able_to_batte, max_attempts=10, expected_result=True)):
             
             (crim_x, crim_y) = (await tob.find_targets_centers_async(btn_battlefield_criminal_img))[0]
             await tob.click_location_async(crim_x, crim_y, x_offset=-100)
@@ -84,12 +84,12 @@ async def merc_battle():
             await wait_battle_results()
             await tob.click_location_async(x=100, y=200)
 
-        p.info('Battle has ended successfully')
+            p.info('Battle has ended successfully')
 
 
 def verify_able_to_batte():
 
-    has_stamina = tob.verify_target_exists(battlefield_stamina_img, confidence=0.98)
+    has_stamina = tob.verify_target_exists(battlefield_stamina_img)
     has_matches = not tob.verify_target_exists(no_remaining_matches_img, confidence=0.98)
 
     if(has_stamina and has_matches): 

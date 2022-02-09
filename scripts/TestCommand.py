@@ -11,14 +11,23 @@ from mss import mss, tools
 import numpy as np
 
 import bots.lunarush as luna
+import bots.cryptopiece as piece
 from helpers.tober import Target, Area
 from prodict import Prodict
 
 # time.sleep(3)
 # asyncio.run(tob.scroll(updown=-33, repeats=3))
 
-win = pyautogui.getWindowsWithTitle('tob_bombcrypto')[0]
-print(win)
+while(True):
+    print(tob.verify_target_exists(piece.btn_battlefield_criminal_img))
+    print('-----')
+    time.sleep(0.5)
+
+
+
+
+# win = pyautogui.getWindowsWithTitle('tob_bombcrypto')[0]
+# print(win)
 
 # game_area = Area(-8, -8, 812 , 500)
 # win.resizeTo(game_area.width, game_area.height)
