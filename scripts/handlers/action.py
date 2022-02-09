@@ -10,6 +10,7 @@ from runner import Runner
 
 p = Printer(bot_name='TOB')
 
+
 async def run_action(runner: Runner):
 
     p.info('Taking bot windows')
@@ -28,7 +29,6 @@ async def run_action(runner: Runner):
         runner.all_actions[next_action.bot_name][index] = result
 
     runner.last_window_amount_by_bot[next_action.bot_name] = len(bot_windows)
-
 
 
 def get_bot_windows(window_name: str):
@@ -51,7 +51,6 @@ def get_action_index_by_window(all_actions: Prodict,  bot_name: str, window):
             return i
 
     raise Exception("Couldn't find the the index for the window")
-
 
 
 async def run_single_action(next_action: Prodict):

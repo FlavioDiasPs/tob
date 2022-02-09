@@ -135,7 +135,7 @@ async def click_location_async(x, y, x_offset = 0, y_offset = 0,
     pyautogui.moveTo(rnd_x, rnd_y, random.uniform(min_move_duration, max_move_duration), pyautogui.easeOutBounce)
     pyautogui.click(duration=random.uniform(min_click_duration, max_click_duration))
 
-    await asyncio.sleep(sleep_after_click_sec)
+    await asyncio.sleep(sleep_after_click_sec)    
 
 
 async def hold_move_async(start_x, start_y, end_x, end_y, 
@@ -401,7 +401,7 @@ def retry(f, params: List[Any]=None, max_attempts=20, attempt_delay=0.2,
             print(f' **** Running attempt {attemp_count}/{max_attempts}', end='\r')
 
 
-def safe_retry(f, params: List[Any]=None, max_attempts=20, attempt_delay=0.2, expected_result=None):
+def safe_retry(f, params: List[Any]=None, max_attempts=20, attempt_delay=0.1, expected_result=None):
     attemp_count = 1
 
     while(attemp_count <= max_attempts):

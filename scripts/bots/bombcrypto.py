@@ -24,6 +24,7 @@ bomb_crypto_unavailable_img = Target(cv2.imread('templates/bombcrypto/bomb_crypt
 bomb_didnt_load_img = Target(cv2.imread('templates/bombcrypto/bomb_didnt_load.png'))
 loading_img = Target(cv2.imread('templates/bombcrypto/loading.png'))
 
+
 class BombBotError(Exception):
     """Raised when BombCrypto shows an error"""
     pass

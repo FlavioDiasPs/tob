@@ -1,8 +1,6 @@
 import asyncio
-import math
 import random
 import cv2
-import traceback
 
 from datetime import datetime
 from prodict import Prodict 
@@ -82,14 +80,14 @@ async def heroes_battle():
 
     if tob.safe_retry(
         tob.verify_target_exists, (in_battle_versus, 0.7), max_attempts=4, expected_result=True): 
-        await tob.safe_click_target_center_async(in_battle_versus)
+        await tob.safe_click_target_center_async(in_battle_versus, confidence=0.7)
         p.info('Battle is not finished yet, waiting an extra time')
         return battle_not_ended_yet_sec
 
     if tob.verify_target_exists(window_is_open) == False:     
         raise Exception('The window was not open')
 
-    await handle_start()
+    await handle_login()
     await handle_preparation()
 
     p.info('Removing selected heroes without energy')
@@ -110,34 +108,56 @@ async def calculate_next_schedule(battle_result, next_action: Prodict):
         next_action.schedules.wait_for_energy = get_now() + conf.intervals.wait_for_energy_sec
 
     elif battle_result == battle_not_ended_yet_sec:
-
-        if 'ingame' not in next_action:
-            next_action.ingame = Prodict({})
-
-        if 'battle_not_ended_yet_count' not in next_action.ingame:
-            next_action.ingame.battle_not_ended_yet_count = 0
-                       
-        next_action.ingame.battle_not_ended_yet_count += 1
-
-        if next_action.ingame.battle_not_ended_yet_count > conf.parameters.battle_not_ended_max_retries:
-            next_action.schedules.battle_stuck_refreshing_page = get_now() + 1
-            await tob.refresh_page()
-        else:
-            next_action.schedules.  battle_not_ended_yet = get_now() + conf.intervals.battle_not_ended_yet_sec
-
+        next_action = await check_battle_not_ended_yet(next_action, conf)
+        
     else:
         next_action.schedules.unknow_schedule = get_now() + 500
 
     return next_action
 
     
-async def handle_start():
+async def check_battle_not_ended_yet(next_action: Prodict, conf: Prodict):
+    if 'ingame' not in next_action:
+        next_action.ingame = Prodict({})
+
+    if 'battle_not_ended_yet_count' not in next_action.ingame:
+        next_action.ingame.battle_not_ended_yet_count = 0
+                    
+    next_action.ingame.battle_not_ended_yet_count += 1
+
+    p.info(f'Battle not ended yet: {next_action.ingame.battle_not_ended_yet_count}/{conf.parameters.battle_not_ended_max_retries}')
+    if next_action.ingame.battle_not_ended_yet_count > conf.parameters.battle_not_ended_max_retries:
+        next_action.schedules.battle_stuck_refreshing_page = get_now() + 1
+        await tob.refresh_page()
+    else:
+        next_action.schedules.battle_not_ended_yet = get_now() + conf.intervals.battle_not_ended_yet_sec
+
+    return next_action
+
+
+async def handle_login():
 
     if tob.anyone(tob.verify_target_exists, [loading, btn_login_with_metamask, helios_brand]):
-        p.info('Entering the game')
+
+        p.info('Waiting loading')
+        tob.safe_retry(tob.verify_target_exists, [loading], max_attempts=40, expected_result=False)
+
+        await asyncio.sleep(2)
+        p.info('Waiting helios brand')
+        tob.safe_retry(tob.verify_target_exists, [helios_brand], max_attempts=40, expected_result=False)
+
+        await asyncio.sleep(2)
+        p.info('Login in with metamask')
         await tob.click_target_center_async(btn_login_with_metamask, sleep_after_click_sec=2)
+
+        p.info('Signin metamask')
         await metamask.signin()
-        tob.retry(tob.verify_target_exists, [btn_boss_hunt_start_game], expected_result=True)
+
+        p.info('Entering the game')
+        tob.retry(tob.verify_target_exists, [btn_boss_hunt_start_game], max_attempts=40, expected_result=True)
+
+
+async def handle_preparation():
 
     if tob.verify_target_exists(btn_boss_hunt):
         return 
@@ -153,14 +173,17 @@ async def handle_start():
             await tob.click_target_center_async(btn_tap_to_open, sleep_after_click_sec=2)
             await tob.click_location_async(x=random.randint(250, 350), y=random.randint(250, 350))
 
-    elif tob.anyone(tob.verify_target_exists, [defeat, victory]): 
-        p.info('Continuing to next battle')
+    elif tob.safe_retry(tob.verify_target_exists, [victory], expected_result=True): 
+        p.info('Continuing to next battle afeter victory')
+        await asyncio.sleep(2)
         await tob.click_location_async(x=random.randint(250, 350), y=random.randint(250, 350))
 
+    elif tob.safe_retry(tob.verify_target_exists, [defeat], expected_result=True): 
+        p.info('Continuing to next battle after defeat')
+        await asyncio.sleep(2)
+        await tob.click_location_async(x=random.randint(250, 350), y=random.randint(250, 350))
 
-async def handle_preparation():
-
-    p.info('Choosing available boss to fight')
+    p.info('Checking if will need to choose a new boss to fight')
     await asyncio.sleep(3)
     await tob.safe_click_target_center_async(btn_available_boss, sleep_after_click_sec=0.5) 
     await handle_error_async()
