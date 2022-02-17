@@ -56,6 +56,9 @@ async def run_bot(next_action: Prodict):
     win = next_action.window
 
     try:
+        if win.isMinimized:
+            win.restore()
+
         area = Area(win.left, win.top, win.width, win.height)
         win.resizeTo(game_area.width, game_area.height)
         win.moveTo(game_area.left, game_area.top)
@@ -68,6 +71,10 @@ async def run_bot(next_action: Prodict):
     finally:
         win.moveTo(area.left, area.top)
         win.resizeTo(area.width, area.height)
+
+    if 'wait_for_energy' in next_action.schedules:
+        p.info("There are no fights left. Minimizing to save resources")
+        win.minimize()
   
     return next_action
 
@@ -137,6 +144,10 @@ async def check_battle_not_ended_yet(next_action: Prodict, conf: Prodict):
 
 async def handle_login():
 
+    if tob.verify_target_exists(error):
+        await tob.refresh_page()
+        await asyncio.sleep(4)
+
     if tob.anyone(tob.verify_target_exists, [loading, btn_login_with_metamask, helios_brand]):
 
         p.info('Waiting loading')
@@ -161,28 +172,29 @@ async def handle_preparation():
 
     if tob.verify_target_exists(btn_boss_hunt):
         return 
- 
-    elif tob.verify_target_exists(btn_boss_hunt_start_game): 
-        p.info('Entering boss fight') 
-        await tob.click_target_center_async(btn_boss_hunt_start_game, sleep_after_click_sec=0.5)
-    
-    elif tob.safe_retry(tob.verify_target_exists, [btn_tap_to_open], expected_result=True):  
+
+    elif tob.safe_retry(tob.verify_target_exists, [btn_tap_to_open], max_attempts=10, expected_result=True):  
         p.info('Taking rewards from battle')
          
         while tob.anyone(tob.verify_target_exists, [defeat, victory]):
             await tob.click_target_center_async(btn_tap_to_open, sleep_after_click_sec=2)
             await tob.click_location_async(x=random.randint(250, 350), y=random.randint(250, 350))
 
-    elif tob.safe_retry(tob.verify_target_exists, [victory], expected_result=True): 
+    elif tob.safe_retry(tob.verify_target_exists, [victory], max_attempts=10, expected_result=True): 
         p.info('Continuing to next battle afeter victory')
         await asyncio.sleep(2)
         await tob.click_location_async(x=random.randint(250, 350), y=random.randint(250, 350))
 
-    elif tob.safe_retry(tob.verify_target_exists, [defeat], expected_result=True): 
+    elif tob.safe_retry(tob.verify_target_exists, [defeat], max_attempts=10, expected_result=True): 
         p.info('Continuing to next battle after defeat')
         await asyncio.sleep(2)
         await tob.click_location_async(x=random.randint(250, 350), y=random.randint(250, 350))
-
+ 
+    elif tob.verify_target_exists(btn_boss_hunt_start_game): 
+        p.info('Entering boss fight') 
+        await tob.click_target_center_async(btn_boss_hunt_start_game, sleep_after_click_sec=0.5)
+    
+    
     p.info('Checking if will need to choose a new boss to fight')
     await asyncio.sleep(3)
     await tob.safe_click_target_center_async(btn_available_boss, sleep_after_click_sec=0.5) 
@@ -212,7 +224,7 @@ async def prepare_and_fight():
     await tob.hold_move_async(150, 296, 154, 370)
     amount_heroes_selected = await add_heroes_to_fight(unselected_hero_energy_part2, amount_heroes_selected)    
     
-    await tob.scroll(updown=500, repeats=5)
+    await tob.hold_move_async(150, 370, 154, 200)
 
     if amount_heroes_selected <= 0: 
         return wait_for_energy_sec

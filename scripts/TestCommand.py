@@ -18,15 +18,27 @@ from prodict import Prodict
 # time.sleep(3)
 # asyncio.run(tob.scroll(updown=-33, repeats=3))
 
-while(True):
-    print(tob.verify_target_exists(piece.btn_battlefield_criminal_img))
-    print('-----')
-    time.sleep(0.5)
+
+# while(True):
+    
+    # win = pyautogui.getWindowsWithTitle('tob_lunarush')[0]
+    # print(win)
+
+    # win.minimize()
+    # time.sleep(2)
+    # win.restore()
+    # time.sleep(2)
 
 
 
 
-# win = pyautogui.getWindowsWithTitle('tob_bombcrypto')[0]
+
+    # print(tob.verify_target_exists(piece.btn_battlefield_criminal_img))
+    # print('-----')
+    # time.sleep(0.5)
+
+
+# win = pyautogui.getWindowsWithTitle('tob_spacecrypto')[0]
 # print(win)
 
 # game_area = Area(-8, -8, 812 , 500)
@@ -36,6 +48,8 @@ while(True):
 # while(True):
 #     print(pyautogui.mouseinfo.position())
 #     time.sleep(0.5)
+
+asyncio.run(tob.hold_move_async(270, 300, 290, 125, max_x_precision_offset=2, min_move_duration=0.5, max_move_duration=0.8))
 
 # search_area = tob.Area(50, 520, 220, 100)
 

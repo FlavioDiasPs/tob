@@ -41,7 +41,8 @@ async def run_bot(next_action: Prodict):
     win = next_action.window
 
     try:
-        area = Area(win.left, win.top, win.width, win.height)
+        # area = Area(win.left, win.top, win.width, win.height)
+        win.restore()
         win.resizeTo(game_area.width, game_area.height)
         win.moveTo(game_area.left, game_area.top)
         win.activate()
@@ -55,8 +56,9 @@ async def run_bot(next_action: Prodict):
         next_action.schedules.crop_plant_schedule = get_now() + crop_plant_next_schedule   
 
     finally:
-        win.moveTo(area.left, area.top)
-        win.resizeTo(area.width, area.height)
+        # win.moveTo(area.left, area.top)
+        # win.resizeTo(area.width, area.height)
+        win.minimize()
 
     return next_action
 

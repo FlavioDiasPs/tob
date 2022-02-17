@@ -12,10 +12,10 @@ btn_metamask_sign = Target(cv2.imread('templates/metamask/btn_metamask_sign.png'
 async def metamask_click(btn):
     
     tob.activate_window_by_name("MetaMask Notification")    
-    tob.retry(tob.verify_target_exists, [btn], max_attempts=100, attempt_delay=0.2, expected_result=True)
+    tob.retry(tob.verify_target_exists, [btn], max_attempts=50, attempt_delay=0.2, expected_result=True)
     
     while(tob.verify_target_exists(btn)):
-        await tob.click_target_center_async(target=btn, max_attempts=100, attempt_delay=0.2)
+        await tob.click_target_center_async(target=btn, max_attempts=50, attempt_delay=0.2)
         await asyncio.sleep(2)
 
 

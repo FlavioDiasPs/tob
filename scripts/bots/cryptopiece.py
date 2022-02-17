@@ -13,16 +13,16 @@ from helpers.tober import Target, Area
 
 game_area = Area(-8, -8, 747, 570)
 
-btn_battlefield_merc_down_img = Target(cv2.imread('templates/cryptopiece/btn_battlefield_merc_down.png'))
-btn_battle_img = Target(cv2.imread('templates/cryptopiece/btn_battle.png'))
-btn_battlefield_battle_claim_img = Target(cv2.imread('templates/cryptopiece/btn_battlefield_battle_claim.png'))
-btn_battlefield_battle_close_img = Target(cv2.imread('templates/cryptopiece/btn_battlefield_battle_close.png'))
-btn_battlefield_criminal_img = Target(cv2.imread('templates/cryptopiece/criminal_70.png'))
-battlefield_stamina_img = Target(cv2.imread('templates/cryptopiece/battlefield_stamina.png'))
-battlefield_wait_battle_img = Target(cv2.imread('templates/cryptopiece/battlefield_wait_battle.png'))
-not_enough_stamina_img = Target(cv2.imread('templates/cryptopiece/not_enough_stamina.png'))
-not_enough_stamina_2_img = Target(cv2.imread('templates/cryptopiece/not_enough_stamina_2.png'))
-no_remaining_matches_img = Target(cv2.imread('templates/cryptopiece/no_remaining_matches.png'))
+btn_battlefield_merc_down_img = Target(cv2.imread('templates/cryptopiece/btn_battlefield_merc_down.png'), game_area)
+btn_battle_img = Target(cv2.imread('templates/cryptopiece/btn_battle.png'), game_area)
+btn_battlefield_battle_claim_img = Target(cv2.imread('templates/cryptopiece/btn_battlefield_battle_claim.png'), game_area)
+btn_battlefield_battle_close_img = Target(cv2.imread('templates/cryptopiece/btn_battlefield_battle_close.png'), game_area)
+btn_battlefield_criminal_img = Target(cv2.imread('templates/cryptopiece/criminal_70.png'), game_area)
+battlefield_stamina_img = Target(cv2.imread('templates/cryptopiece/battlefield_stamina.png'), Area(40, 330, 60, 80))
+battlefield_wait_battle_img = Target(cv2.imread('templates/cryptopiece/battlefield_wait_battle.png'), game_area)
+not_enough_stamina_img = Target(cv2.imread('templates/cryptopiece/not_enough_stamina.png'), game_area)
+not_enough_stamina_2_img = Target(cv2.imread('templates/cryptopiece/not_enough_stamina_2.png'), game_area)
+no_remaining_matches_img = Target(cv2.imread('templates/cryptopiece/no_remaining_matches.png'), Area(40, 440, 110, 50))
 
 class CryptoPieceError(Exception):
     """Raised when CryptoPiece shows an error"""
@@ -36,7 +36,9 @@ async def run_bot(next_action: Prodict):
     win = next_action.window
 
     try:
-        area = Area(win.left, win.top, win.width, win.height)
+        win.restore()
+
+        # area = Area(win.left, win.top, win.width, win.height)
         win.resizeTo(game_area.width, game_area.height)
         win.moveTo(game_area.left, game_area.top)
         win.activate()
@@ -48,8 +50,9 @@ async def run_bot(next_action: Prodict):
         next_action.schedules.wait_for_stamina = get_now() + wait_for_stamina    
 
     finally:
-        win.moveTo(area.left, area.top)
-        win.resizeTo(area.width, area.height)      
+        # win.moveTo(area.left, area.top)
+        # win.resizeTo(area.width, area.height) 
+        win.minimize()     
 
     return next_action
 
@@ -60,7 +63,7 @@ def get_now():
 
 async def get_game_ready():
     await tob.refresh_page()
-    await asyncio.sleep(3)
+    await asyncio.sleep(6)
 
 
 async def merc_battle():   
@@ -70,8 +73,9 @@ async def merc_battle():
     
     p.info('Selecting merc')
     for (merc_pos_x, merc_pos_y) in mercs_centers:
-        await tob.click_location_async(x=merc_pos_x, y=merc_pos_y, y_offset=-50, sleep_after_click_sec=2)
-        
+        await tob.click_location_async(x=merc_pos_x, y=merc_pos_y, y_offset=-50, sleep_after_click_sec=4)
+        await asyncio.sleep(3)
+
         p.info('Checking for available mercs')
         while(tob.safe_retry(verify_able_to_batte, max_attempts=10, expected_result=True)):
             
@@ -81,15 +85,20 @@ async def merc_battle():
             await tob.click_target_center_async(btn_battle_img)
             await metamask.signin()     
             
-            await wait_battle_results()
+            result = await wait_battle_results()
             await tob.click_location_async(x=100, y=200)
 
+            if result == False:
+                break
+
             p.info('Battle has ended successfully')
+
+    p.info('All battles done')
 
 
 def verify_able_to_batte():
 
-    has_stamina = tob.verify_target_exists(battlefield_stamina_img)
+    has_stamina = tob.verify_target_exists(battlefield_stamina_img, confidence=0.90)
     has_matches = not tob.verify_target_exists(no_remaining_matches_img, confidence=0.98)
 
     if(has_stamina and has_matches): 
@@ -110,5 +119,8 @@ async def wait_battle_results():
                         ]
 
     tob.retry(tob.anyone, [tob.verify_target_exists, battle_ends_targets], expected_result=True, max_attempts=100)
+
+    return not tob.anyone(tob.verify_target_exists, [not_enough_stamina_img, not_enough_stamina_2_img])
+     
 
     

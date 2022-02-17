@@ -143,13 +143,19 @@ def is_connected():
 
 async def connect_wallet():
 
-    p.info('Connecting wallet')
-    await tob.click_target_center_async(target=btn_connect_wallet_img, expected_result=True, sleep_after_click_sec=1)
-    await handle_error_message()
+    try:
+        
+        p.info('Connecting wallet')
+        await tob.click_target_center_async(target=btn_connect_wallet_img, expected_result=True, sleep_after_click_sec=1)
+        await handle_error_message()
 
-    p.info('Signing metamask')
-    await metamask.signin()
-    await check_game_loaded()
+        p.info('Signing metamask')
+        await metamask.signin()
+        await check_game_loaded()
+
+    except:
+        await tob.refresh_page()
+        raise
 
 
 async def check_game_loaded():

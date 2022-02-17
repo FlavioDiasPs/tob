@@ -124,11 +124,13 @@ async def click_location_async(x, y, x_offset = 0, y_offset = 0,
     rnd_x = x + x_offset + random.uniform(min_x_precision_offset, max_x_precision_offset)
     rnd_y = y + y_offset + random.uniform(min_y_precision_offset, max_y_precision_offset)
 
-    moreless = random.randint(-1, 1) 
-    if moreless == 0: moreless = 1
+    moreless_y = random.randint(-1, 1) 
+    moreless_x = random.randint(-1, 1) 
+    if moreless_y == 0: moreless_y = 1
+    if moreless_x == 0: moreless_x = 1
  
-    side_move_x = rnd_x + random.uniform(20, 40) * moreless
-    side_move_y = rnd_y + random.uniform(20, 40) * moreless
+    side_move_x = rnd_x + random.uniform(20, 40) * moreless_x
+    side_move_y = rnd_y + random.uniform(20, 40) * moreless_y
 
     pyautogui.moveTo(side_move_x, side_move_y, random.uniform(0.2, 0.3), pyautogui.easeInBack)
     pyautogui.moveTo(rnd_x, rnd_y, random.uniform(min_move_duration, max_move_duration), pyautogui.easeOutBounce)
@@ -149,11 +151,13 @@ async def hold_move_async(start_x, start_y, end_x, end_y,
     rnd_end_x = end_x + random.uniform(min_x_precision_offset, max_x_precision_offset)
     rnd_end_y = end_y + random.uniform(min_y_precision_offset, max_y_precision_offset)
 
-    moreless = random.randint(-1, 1) 
-    if moreless == 0: moreless = 1
+    moreless_y = random.randint(-1, 1) 
+    moreless_x = random.randint(-1, 1) 
+    if moreless_y == 0: moreless_y = 1
+    if moreless_x == 0: moreless_x = 1
  
-    side_move_x = rnd_x + random.uniform(20, 40) * moreless
-    side_move_y = rnd_y + random.uniform(20, 40) * moreless
+    side_move_x = rnd_x + random.uniform(20, 40) * moreless_x
+    side_move_y = rnd_y + random.uniform(20, 40) * moreless_y
 
     pyautogui.moveTo(side_move_x, side_move_y, random.uniform(0.2, 0.3), pyautogui.easeInBack)
     
@@ -161,6 +165,8 @@ async def hold_move_async(start_x, start_y, end_x, end_y,
     pyautogui.mouseDown()
     
     pyautogui.moveTo(rnd_end_x, rnd_end_y, random.uniform(min_move_duration, max_move_duration), pyautogui.easeOutBounce)
+    
+    await asyncio.sleep(0.5)
     pyautogui.mouseUp()
 
     await asyncio.sleep(sleep_after_click_sec)
@@ -198,8 +204,9 @@ async def click_all_targets_center_async(target: Target, max_attempts=10,
     
 
 async def safe_click_target_center_async(target: Target, max_attempts=10, attempt_delay=0.2,
-                                min_x_precision_offset = 1, max_x_precision_offset = 10,
-                                min_y_precision_offset = 1, max_y_precision_offset = 10,
+                                x_offset=0, y_offset=0,
+                                min_x_precision_offset = 1, max_x_precision_offset = 7,
+                                min_y_precision_offset = 1, max_y_precision_offset = 7,
                                 sleep_after_click_sec = 0.2, confidence=0.9):
     ''' Click on an identified image
         target = template
@@ -221,6 +228,7 @@ async def safe_click_target_center_async(target: Target, max_attempts=10, attemp
         max_ypo = max_y_precision_offset
 
         await click_location_async(x=x, y=y, 
+                        x_offset=x_offset, y_offset=y_offset,
                         min_x_precision_offset=min_xpo, max_x_precision_offset=max_xpo,
                         min_y_precision_offset=min_ypo, max_y_precision_offset=max_ypo,
                         sleep_after_click_sec=sleep_after_click_sec)
@@ -238,6 +246,7 @@ async def move_mouse_target_center_async(target: Target, max_attemps=10, x_offse
     locations = await find_targets_centers_async(target, max_attemps)
     
     if locations and len(locations) > 0:
+        # locations = sorted(locations, key=lambda l: l[1], reverse=False)
         location = locations[0]
         random_x_path = location[0] + x_offset + random.uniform(1, 20)
         random_y_path = location[1] + y_offset + random.uniform(1, 20)
@@ -259,6 +268,16 @@ async def click_target_center_async(target: Target, max_attempts=20, attempt_del
 
     if result != expected_result:
         raise Exception(custom_error)
+
+
+def wait_target_appear_disappear(target: Target, max_attempts=99, attempt_delay=0.2, expected_result=True,
+                            custom_error: str = "Didn't find target", confidence=0.9):
+    
+    retry(
+        verify_target_exists, [target, confidence], max_attempts=max_attempts, 
+                                attempt_delay=attempt_delay, expected_result=expected_result,
+                                custom_error=custom_error
+        )
 
 
 def verify_target_exists(target: Target, confidence=0.9):
@@ -310,6 +329,7 @@ def locate_target(target: Target, confidence=0.9):
     grouped_rectangles, weights = cv2.groupRectangles(sorted_rectangles, 1, 0.2)
   
     return grouped_rectangles
+
 
 
 

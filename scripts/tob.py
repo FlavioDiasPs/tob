@@ -7,6 +7,7 @@ import bots.bombcrypto as bombcrypto_bot
 import bots.agrofarm as agrofarm_bot
 import bots.cryptopiece as cryptopiece_bot
 import bots.lunarush as lunarush_bot
+import bots.spacecrypto as spacecrypto_bot
 import helpers.tober as tob
 import handlers.action as action
 
@@ -46,8 +47,8 @@ async def main():
         
         runner.all_configs = preparation()
         runner = await run(runner)
-
         finalization(runner.all_configs)
+        
         next_actions = get_next_actions(runner.all_actions)
         runner.next_action = next_actions[0]
 
@@ -108,6 +109,8 @@ def fill_next_action(all_configs: Prodict, bot_name: str):
         next_action.function = cryptopiece_bot.run_bot
     elif bot_name == 'lunarush':
         next_action.function = lunarush_bot.run_bot
+    elif bot_name == 'spacecrypto':
+        next_action.function = spacecrypto_bot.run_bot
     else:
         raise Exception("{bot_name} is not supported")
 
