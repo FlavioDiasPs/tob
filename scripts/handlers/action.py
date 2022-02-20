@@ -42,7 +42,7 @@ def get_bot_windows(window_name: str):
             print(f"Rename all the windows to: {window_name}")
             os.system("pause")
 
-    return windows
+    return sorted(windows, key=lambda w: w.title, reverse=False)
 
 
 def get_action_index_by_window(all_actions: Prodict,  bot_name: str, window):

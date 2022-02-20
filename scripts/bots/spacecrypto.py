@@ -29,6 +29,7 @@ btn_victory_confirm_img = Target(cv2.imread('templates/spacecrypto/btn_victory_c
 btn_loss_confirm_img = Target(cv2.imread('templates/spacecrypto/btn_loss_confirm_img.png'), game_area)
 
 full_slots_img = Target(cv2.imread('templates/spacecrypto/full_slots_img.png'), Area(470, 80, 70, 75))
+low_ammo_img = Target(cv2.imread('templates/spacecrypto/low_ammo_img.png'), game_area)
 btn_close_img = Target(cv2.imread('templates/spacecrypto/btn_close_img.png'), game_area)
 btn_ok_img = Target(cv2.imread('templates/spacecrypto/btn_ok_img.png'), game_area)
 btn_wait_unresponsive_img = Target(cv2.imread('templates/spacecrypto/btn_wait_unresponsive_img.png'), game_area)
@@ -139,10 +140,34 @@ async def prepare_spaceship_to_fight():
 
 async def start_fight(scroll_limit: int):
 
-    scroll_count = 0
     await asyncio.sleep(3)
-    
+
+    p.info('Removing low ammo spaceships, this can take a long time')
+    await remove_low_ammo_spaceships_async()
+
     p.info('Selecting until full slots, this can take a long time')
+    await choose_spaceships_async(scroll_limit)
+    await handle_error_async()
+
+    p.info('Entering the space fight')
+    while(tob.verify_target_exists(btn_fight_boss_img)):
+        await check_confirm_buttons_async()
+        await tob.safe_click_target_center_async(btn_fight_boss_img, sleep_after_click_sec=1) 
+
+    await check_confirm_buttons_async()
+
+
+async def remove_low_ammo_spaceships_async():
+
+    while(tob.verify_target_exists(low_ammo_img, confidence=0.95)):
+        await tob.click_all_targets_center_async(low_ammo_img, confidence=0.95,
+                                                x_offset=25, y_offset=-5,
+                                                max_y_precision_offset=3, max_x_precision_offset=3)
+
+
+async def choose_spaceships_async(scroll_limit: int):
+    scroll_count = 0
+
     while not tob.verify_target_exists(full_slots_img, confidence=0.99):
         click_result = await tob.safe_click_target_center_async(btn_spaceship_fight_img, 
                                                 x_offset=-20,  y_offset=-3, 
@@ -161,15 +186,6 @@ async def start_fight(scroll_limit: int):
         if(tob.verify_target_exists(btn_close_img)):
             raise SpaceCryptoError("SpaceCrypto showed an error. Restarting...")
 
-    await handle_error_async()
-
-    p.info('Entering the space fight')
-    while(tob.verify_target_exists(btn_fight_boss_img)):
-        await check_confirm_buttons_async()
-        await tob.safe_click_target_center_async(btn_fight_boss_img, sleep_after_click_sec=1) 
-
-    await check_confirm_buttons_async()
-   
 
 async def surrender_fight():
     
