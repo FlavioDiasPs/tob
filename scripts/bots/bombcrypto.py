@@ -211,7 +211,12 @@ async def send_heroes_to_work():
     p.info('Getting back to Treasure Hunt')
 
     await tob.safe_click_target_center_async(btn_x_img)
-    await tob.safe_click_target_center_async(btn_treasure_hunt_img)
+    await asyncio.sleep(2)
+
+    while(tob.verify_target_exists(btn_treasure_hunt_img)):
+        p.info('Entering treasure hunt')
+        await tob.safe_click_target_center_async(btn_treasure_hunt_img)
+        await asyncio.sleep(2)
 
 
 def click_go_work():
@@ -249,4 +254,7 @@ async def refresh_heroes():
     await tob.safe_click_target_center_async(btn_back_img)    
 
     await handle_error_message()
-    await tob.safe_click_target_center_async(btn_treasure_hunt_img)    
+
+    while(tob.verify_target_exists(btn_treasure_hunt_img)):
+        await tob.safe_click_target_center_async(btn_treasure_hunt_img)
+        await asyncio.sleep(2)   

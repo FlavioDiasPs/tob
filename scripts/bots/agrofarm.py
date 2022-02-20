@@ -19,6 +19,7 @@ btn_my_farm = Target(cv2.imread('templates/agrofarm/btn_my_farm.png'), game_area
 btn_collect = Target(cv2.imread('templates/agrofarm/btn_collect.png'), game_area)
 btn_repair = Target(cv2.imread('templates/agrofarm/btn_repair.png'), game_area)
 btn_repairing = Target(cv2.imread('templates/agrofarm/btn_repairing.png'), game_area)
+btn_repair_ended = Target(cv2.imread('templates/agrofarm/btn_repair_ended.png'), game_area)
 btn_ok = Target(cv2.imread('templates/agrofarm/btn_ok.png'), game_area)
 btn_my_seeds = Target(cv2.imread('templates/agrofarm/btn_my_seeds.png'), game_area)
 btn_crop = Target(cv2.imread('templates/agrofarm/btn_crop.png'), game_area)
@@ -113,6 +114,10 @@ async def crop_and_plant():
 
     p.info('Checking plants to crop')
     await tob.click_target_center_async(btn_my_farm, sleep_after_click_sec=1)
+    
+    while(tob.verify_target_exists(btn_repair_ended)):
+        await tob.safe_click_target_center_async(btn_repair_ended, sleep_after_click_sec=1)
+        await tob.safe_click_target_center_async(btn_ok, sleep_after_click_sec=1)
 
     see_btn_collect = tob.safe_retry(tob.verify_target_exists, [btn_collect], max_attempts=2, expected_result=True)
     see_btn_seed = tob.safe_retry(tob.verify_target_exists, [btn_my_seeds], max_attempts=2, expected_result=True)
