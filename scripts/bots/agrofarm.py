@@ -17,6 +17,8 @@ btn_disconnect = Target(cv2.imread('templates/agrofarm/btn_disconnect.png'), gam
 btn_choose_wallet = Target(cv2.imread('templates/agrofarm/btn_choose_wallet.png'), game_area)
 btn_my_farm = Target(cv2.imread('templates/agrofarm/btn_my_farm.png'), game_area)
 btn_collect = Target(cv2.imread('templates/agrofarm/btn_collect.png'), game_area)
+btn_repair = Target(cv2.imread('templates/agrofarm/btn_repair.png'), game_area)
+btn_repairing = Target(cv2.imread('templates/agrofarm/btn_repairing.png'), game_area)
 btn_ok = Target(cv2.imread('templates/agrofarm/btn_ok.png'), game_area)
 btn_my_seeds = Target(cv2.imread('templates/agrofarm/btn_my_seeds.png'), game_area)
 btn_crop = Target(cv2.imread('templates/agrofarm/btn_crop.png'), game_area)
@@ -114,8 +116,17 @@ async def crop_and_plant():
 
     see_btn_collect = tob.safe_retry(tob.verify_target_exists, [btn_collect], max_attempts=2, expected_result=True)
     see_btn_seed = tob.safe_retry(tob.verify_target_exists, [btn_my_seeds], max_attempts=2, expected_result=True)
-    if see_btn_collect == False and see_btn_seed == False:
+    see_btn_repair = tob.safe_retry(tob.verify_target_exists, [btn_repair], max_attempts=2, expected_result=True)
+
+    if see_btn_collect == False and see_btn_seed == False and see_btn_repair == False:
         return await find_minutes_to_wait() * 60
+
+    while(tob.verify_target_exists(btn_repair)):
+        await tob.click_target_center_async(btn_repair, sleep_after_click_sec=1)
+        await tob.click_target_center_async(btn_ok)
+
+    if tob.verify_target_ocorrency_amount(btn_repairing) >= 2:
+        return 60 * 60
 
     while(tob.verify_target_exists(btn_collect)):
         await tob.click_target_center_async(btn_collect)
@@ -160,6 +171,8 @@ async def find_minutes_to_wait():
         wait_time_min = 2
     elif (tob.verify_target_exists(wait_0_minutes)):
         wait_time_min = 1
+    elif (tob.verify_target_exists(btn_repairing)):
+        wait_time_min = 60
     else:
         print(' **** Couldnt find any wait time. Retrying')
         wait_time_min = -1
