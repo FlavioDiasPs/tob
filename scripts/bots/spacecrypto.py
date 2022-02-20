@@ -31,9 +31,12 @@ btn_loss_confirm_img = Target(cv2.imread('templates/spacecrypto/btn_loss_confirm
 full_slots_img = Target(cv2.imread('templates/spacecrypto/full_slots_img.png'), Area(470, 80, 70, 75))
 btn_close_img = Target(cv2.imread('templates/spacecrypto/btn_close_img.png'), game_area)
 btn_ok_img = Target(cv2.imread('templates/spacecrypto/btn_ok_img.png'), game_area)
+btn_wait_unresponsive_img = Target(cv2.imread('templates/spacecrypto/btn_wait_unresponsive_img.png'), game_area)
 
 boss_lose_img = Target(cv2.imread('templates/spacecrypto/boss_lose_img.png'), game_area)
 boss_victory_img = Target(cv2.imread('templates/spacecrypto/boss_victory_img.png'), game_area)
+
+
 
 class SpaceCryptoError(Exception):
     """Raised when SpaceCrypto shows an error"""
@@ -62,12 +65,12 @@ async def run_bot(next_action: Prodict):
         await handle_error_async()
         await start_fight(scroll_limit)
 
-        wait_for_spaceship_replacement_sec = next_action.config.intervals.wait_for_spaceship_replacement_sec
+        wait_for_surrender_sec = next_action.config.intervals.wait_for_surrender_sec
 
         min_wait = next_action.config.parameters.extra_random_wait_time_min_sec
         max_wait = next_action.config.parameters.extra_random_wait_time_max_sec
         extra_random_seconds = random.randint(min_wait, max_wait)
-        next_action.schedules.wait_for_spaceship_replacement = get_now() + wait_for_spaceship_replacement_sec + extra_random_seconds   
+        next_action.schedules.wait_for_surrender = get_now() + wait_for_surrender_sec + extra_random_seconds   
     except:
         traceback.print_stack()
         raise
@@ -123,10 +126,9 @@ async def prepare_spaceship_to_fight():
         p.info('Surrendering and starting from beginning again')
         await surrender_fight()
 
-        await check_confirm_buttons_async()
-
         p.info('Traveling to spaceship inventory')
         while(tob.verify_target_exists(btn_spaceship_inventory_img)):
+            await check_confirm_buttons_async()
             await tob.click_target_center_async(btn_spaceship_inventory_img, sleep_after_click_sec=2)
         
         await wait_processing_async()
@@ -162,7 +164,10 @@ async def start_fight(scroll_limit: int):
     await handle_error_async()
 
     p.info('Entering the space fight')
-    await tob.click_target_center_async(btn_fight_boss_img) 
+    while(tob.verify_target_exists(btn_fight_boss_img)):
+        await check_confirm_buttons_async()
+        await tob.safe_click_target_center_async(btn_fight_boss_img, sleep_after_click_sec=1) 
+
     await check_confirm_buttons_async()
    
 
@@ -180,7 +185,7 @@ async def surrender_fight():
 
 async def wait_processing_async():
     p.info('Waiting processing...')
-    tob.wait_target_appear_disappear(processing_img, expected_result=True)
+    tob.wait_target_appear_disappear(processing_img, expected_result=False)
 
 
 async def check_confirm_buttons_async():
@@ -188,16 +193,24 @@ async def check_confirm_buttons_async():
     while tob.anyone(tob.verify_target_exists, [boss_lose_img, boss_victory_img]):
         await tob.safe_retry(tob.safe_click_target_center_async, [btn_victory_confirm_img], max_attempts=3)
         await tob.safe_retry(tob.safe_click_target_center_async, [btn_loss_confirm_img], max_attempts=3)
+        await tob.safe_retry(tob.safe_click_target_center_async, [btn_surrender_confirm_img], max_attempts=3)
+        await handle_error_async()
         await asyncio.sleep(2)
     
 
 async def handle_error_async():
 
     p.info('Checking possible errors')
+    if tob.safe_retry(tob.verify_target_exists, [btn_wait_unresponsive_img], max_attempts=3, expected_result=True):
+        await tob.click_target_center_async(btn_wait_unresponsive_img, sleep_after_click_sec=2)
+        await asyncio.sleep(3)
+        await tob.refresh_page()
+        raise SpaceCryptoError("SpaceCrypto showed an error. Unresponsive. Restarting...")
+
     if tob.safe_retry(tob.verify_target_exists, [btn_close_img], max_attempts=3, expected_result=True):
         await tob.click_target_center_async(btn_close_img, sleep_after_click_sec=2)
-        raise SpaceCryptoError("SpaceCrypto showed an error. Restarting...")
+        raise SpaceCryptoError("SpaceCrypto showed an error. Close button Restarting...")
 
     if tob.safe_retry(tob.verify_target_exists, [btn_ok_img], max_attempts=3, expected_result=True):
         await tob.click_target_center_async(btn_ok_img, sleep_after_click_sec=2)
-        raise SpaceCryptoError("SpaceCrypto showed an error. Restarting...")
+        raise SpaceCryptoError("SpaceCrypto showed an error. Ok Button Restarting...")

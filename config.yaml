@@ -1,7 +1,6 @@
 tob:
   press_space_before_and_after_bot: False
 
-
 spacecrypto:
   window_name: tob_spacecrypto
   parameters:
@@ -9,7 +8,7 @@ spacecrypto:
     extra_random_wait_time_max_sec: 30
     spaceship_scroll_limit: 3
   intervals:
-    wait_for_spaceship_replacement_sec: 520
+    wait_for_surrender_sec: 350
 
 lunarush:
   window_name: tob_lunarush
@@ -27,12 +26,12 @@ bombcrypto:
     send_heroes_to_work_sec: 1800
     refresh_heroes_positions_sec: 600
 
-# cryptopiece:
-#   window_name: tob_cryptopiece
-#   intervals:
-#     wait_for_stamina_sec: 1800
+cryptopiece:
+  window_name: tob_cryptopiece
+  intervals:
+    wait_for_stamina_sec: 1800
 
-# agrofarm:  
-#   window_name: tob_agrofarm
-#   intervals:
-#     wait_time_when_no_crop_left_sec: 14400
+agrofarm:  
+  window_name: tob_agrofarm
+  intervals:
+    wait_time_when_no_crop_left_sec: 14400

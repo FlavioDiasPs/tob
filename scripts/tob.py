@@ -2,6 +2,7 @@ import traceback
 import pyautogui
 import asyncio
 import yaml
+import keyboard
 
 import bots.bombcrypto as bombcrypto_bot
 import bots.agrofarm as agrofarm_bot
@@ -32,11 +33,12 @@ from runner import Runner
 #     'bot_name': str
 # }
 
-
+pressed_enter = False
 p = Printer(bot_name='TOB')
 init(autoreset=True, convert=True)
 
 async def main():
+    global pressed_enter
 
     await boot(3)
     p.title('Starting TOB - The Only Bot')
@@ -46,6 +48,11 @@ async def main():
         p.info('Taking active window')
         
         runner.all_configs = preparation()
+
+        if pressed_enter == True:
+            runner.next_action.schedules = {}
+            pressed_enter = False
+
         runner = await run(runner)
         finalization(runner.all_configs)
         
@@ -141,7 +148,6 @@ async def wait_next_action_time(next_actions: List[Prodict]):
     
     next_action_schedule_desc = next_action_schedule_obj[0]
     next_action_schedule_sec = next_action_schedule_obj[1]
-    next_action_schedule_sec = add_extra_wait_time_during_dawn(next_action, next_action_schedule_sec)
 
     print('')
     time_to_wait_sec = next_action_schedule_sec
@@ -160,16 +166,10 @@ async def wait_next_action_time(next_actions: List[Prodict]):
         print(f' ## {message} ##', end='\r')
         await asyncio.sleep(1)
 
-
-def add_extra_wait_time_during_dawn(next_action: Prodict, next_action_schedule_sec):
-    # if 'parameters' in next_action.config:
-    #     if 'extra_wait_time_during_dawn_sec' in next_action.config.parameters:
-            
-    #         dt = datetime.now()
-    #         if dt.hour >= 2 and dt.hour <= 5:
-    #             next_action_schedule_sec += next_action.config.parameters.extra_wait_time_during_dawn_sec
-
-    return next_action_schedule_sec
+        if keyboard.is_pressed('enter'):
+            global pressed_enter
+            pressed_enter = True
+            break
 
 
 def get_next_actions(all_actions):
