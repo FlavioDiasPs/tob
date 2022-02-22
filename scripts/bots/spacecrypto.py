@@ -127,10 +127,16 @@ async def prepare_spaceship_to_fight():
         p.info('Surrendering and starting from beginning again')
         await surrender_fight()
 
+        retry_count = 0
         p.info('Traveling to spaceship inventory')
         while(tob.verify_target_exists(btn_spaceship_inventory_img)):
             await check_confirm_buttons_async()
             await tob.click_target_center_async(btn_spaceship_inventory_img, sleep_after_click_sec=2)
+
+            retry_count += 1
+            if retry_count > 4:
+                await tob.refresh_page()
+                raise SpaceCryptoError('The game probably got stuck. Restarting...')
         
         await wait_processing_async()
 
@@ -160,9 +166,10 @@ async def start_fight(scroll_limit: int):
 async def remove_low_ammo_spaceships_async():
 
     while(tob.verify_target_exists(low_ammo_img, confidence=0.95)):
-        await tob.click_all_targets_center_async(low_ammo_img, confidence=0.95,
-                                                x_offset=25, y_offset=-5,
-                                                max_y_precision_offset=3, max_x_precision_offset=3)
+        await tob.safe_click_target_center_async(low_ammo_img, confidence=0.95,
+                                                x_offset=22, y_offset=-5,
+                                                max_y_precision_offset=3, max_x_precision_offset=3,
+                                                sleep_after_click_sec=0.1)
 
 
 async def choose_spaceships_async(scroll_limit: int):
@@ -171,8 +178,8 @@ async def choose_spaceships_async(scroll_limit: int):
     while not tob.verify_target_exists(full_slots_img, confidence=0.99):
         click_result = await tob.safe_click_target_center_async(btn_spaceship_fight_img, 
                                                 x_offset=-20,  y_offset=-3, 
-                                                max_x_precision_offset=10, max_y_precision_offset=6,
-                                                sleep_after_click_sec=1, confidence=0.966) 
+                                                max_x_precision_offset=10, max_y_precision_offset=10,
+                                                sleep_after_click_sec=0.1, confidence=0.92) 
 
         if click_result == False:
             if scroll_count <= scroll_limit:
@@ -205,6 +212,7 @@ async def wait_processing_async():
 
 
 async def check_confirm_buttons_async():
+    retry_count = 0
     p.info('Checking possible loss/victory confirm button')
     while tob.anyone(tob.verify_target_exists, [boss_lose_img, boss_victory_img]):
         await tob.safe_retry(tob.safe_click_target_center_async, [btn_victory_confirm_img], max_attempts=3)
@@ -212,6 +220,11 @@ async def check_confirm_buttons_async():
         await tob.safe_retry(tob.safe_click_target_center_async, [btn_surrender_confirm_img], max_attempts=3)
         await handle_error_async()
         await asyncio.sleep(2)
+
+        retry_count += 1
+        if retry_count > 4:
+            await tob.refresh_page()
+            raise SpaceCryptoError('The game probably got stuck. Restarting...')
     
 
 async def handle_error_async():

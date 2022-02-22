@@ -31,7 +31,7 @@ wait_3_minutes = Target(cv2.imread('templates/agrofarm/wait_3_minutes.png'), gam
 wait_4_minutes = Target(cv2.imread('templates/agrofarm/wait_4_minutes.png'), game_area)
 no_crops_left = Target(cv2.imread('templates/agrofarm/no_crops_left.png'), game_area)
 loading_amount_crops_left = Target(cv2.imread('templates/agrofarm/loading_amount_crops_left.png'), game_area)
-
+maintenance = Target(cv2.imread('templates/agrofarm/maintenance.png'), game_area)
 class AgroFarmError(Exception):
     """Raised when AgroFarm shows an error"""
     pass
@@ -178,6 +178,8 @@ async def find_minutes_to_wait():
         wait_time_min = 1
     elif (tob.verify_target_exists(btn_repairing)):
         wait_time_min = 60
+    elif (tob.verify_target_exists(maintenance)):
+        wait_time_min = 360
     else:
         print(' **** Couldnt find any wait time. Retrying')
         wait_time_min = -1

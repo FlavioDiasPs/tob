@@ -6,7 +6,7 @@ spacecrypto:
   parameters:
     extra_random_wait_time_min_sec: 0
     extra_random_wait_time_max_sec: 30
-    spaceship_scroll_limit: 3
+    spaceship_scroll_limit: 6
   intervals:
     wait_for_surrender_sec: 350
 
