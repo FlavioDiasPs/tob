@@ -61,7 +61,7 @@ async def run_bot(next_action: Prodict):
         if 'wait_for_surrender' in next_action.schedules:
             wait_for_surrender_diff = get_now() - next_action.schedules.wait_for_surrender
 
-        if wait_for_surrender_diff > 0:
+        if wait_for_surrender_diff >= 0:
 
             await handle_error_async()
             await get_game_ready()
