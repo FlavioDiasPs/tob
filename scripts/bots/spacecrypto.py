@@ -57,21 +57,31 @@ async def run_bot(next_action: Prodict):
         win.moveTo(game_area.left, game_area.top)
         win.activate()
 
-        await handle_error_async()
-        await get_game_ready()
+        wait_for_surrender_diff = 0
+        if 'wait_for_surrender' in next_action.schedules:
+            wait_for_surrender_diff = get_now() - next_action.schedules.wait_for_surrender
 
-        await handle_error_async()
-        await prepare_spaceship_to_fight()
+        if wait_for_surrender_diff > 0:
 
-        await handle_error_async()
-        await start_fight(scroll_limit)
+            await handle_error_async()
+            await get_game_ready()
 
-        wait_for_surrender_sec = next_action.config.intervals.wait_for_surrender_sec
+            await handle_error_async()
+            await prepare_spaceship_to_fight()
 
-        min_wait = next_action.config.parameters.extra_random_wait_time_min_sec
-        max_wait = next_action.config.parameters.extra_random_wait_time_max_sec
-        extra_random_seconds = random.randint(min_wait, max_wait)
-        next_action.schedules.wait_for_surrender = get_now() + wait_for_surrender_sec + extra_random_seconds   
+            await handle_error_async()
+            await start_fight(scroll_limit)
+
+            wait_for_surrender_sec = next_action.config.intervals.wait_for_surrender_sec
+            next_action.schedules.wait_for_surrender = get_now() + wait_for_surrender_sec
+
+        else:
+            await handle_error_async()
+            await check_confirm_buttons_async()
+
+        time_to_speed_victory_sec = next_action.config.intervals.time_to_speed_victory_sec
+        next_action.schedules.time_to_speed_victory = get_now() + time_to_speed_victory_sec
+
     except:
         traceback.print_stack()
         raise
