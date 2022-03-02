@@ -236,8 +236,7 @@ async def scroll_up_for_repair():
         if scroll_count <= scroll_limit:
             scroll_count += 1
             await tob.hold_move_release_async(290, 125, 270, 500, 
-                                    max_x_precision_offset=20, max_y_precision_offset=3)
-                                                sleep_after_click_sec=0.1)
+                                    max_x_precision_offset=20, max_y_precision_offset=3, sleep_after_click_sec=0.1)
         tob.click()
         await asyncio.sleep(0.08)
         tob.click()
