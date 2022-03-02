@@ -170,8 +170,8 @@ async def start_fight(scroll_limit: int):
     p.info('Removing low ammo spaceships, this can take a long time')
     await remove_low_ammo_spaceships_async()
 
-    p.info('Repairing useless ships')
-    await repair_useless_ships()
+    # p.info('Repairing useless ships')
+    # await repair_useless_ships()
 
     p.info('Selecting until full slots, this can take a long time')
     await choose_spaceships_async(scroll_limit)
