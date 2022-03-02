@@ -4,7 +4,7 @@ tob:
 spacecrypto:
   window_name: tob_spacecrypto
   parameters:
-    spaceship_scroll_limit: 6
+    spaceship_scroll_limit: 3
   intervals:
     wait_for_surrender_sec: 310
     time_to_speed_victory_sec: 10

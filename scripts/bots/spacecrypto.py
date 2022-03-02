@@ -180,6 +180,14 @@ async def remove_low_ammo_spaceships_async():
                                                 x_offset=22, y_offset=-5,
                                                 max_y_precision_offset=3, max_x_precision_offset=3,
                                                 sleep_after_click_sec=0.1)
+        tob.click()
+        await asyncio.sleep(0.08)
+        tob.click()
+        await asyncio.sleep(0.08)
+        tob.click()
+        await asyncio.sleep(0.08)
+        tob.click()
+        await asyncio.sleep(0.08)
 
 
 async def choose_spaceships_async(scroll_limit: int):
@@ -191,6 +199,15 @@ async def choose_spaceships_async(scroll_limit: int):
                                                 max_x_precision_offset=10, max_y_precision_offset=10,
                                                 sleep_after_click_sec=0.1, confidence=0.92) 
 
+        tob.click()
+        await asyncio.sleep(0.08)
+        tob.click()
+        await asyncio.sleep(0.08)
+        tob.click()
+        await asyncio.sleep(0.08)
+        tob.click()
+        await asyncio.sleep(0.08)
+        
         if click_result == False:
             if scroll_count <= scroll_limit:
                 scroll_count += 1
