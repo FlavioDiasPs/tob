@@ -117,8 +117,8 @@ async def find_targets_centers_async(target: Target, max_attempts=10, attempt_de
 async def click_location_async(x, y, x_offset = 0, y_offset = 0, 
                 min_x_precision_offset = 1, max_x_precision_offset = 10,
                 min_y_precision_offset = 1, max_y_precision_offset = 10,
-                min_move_duration = 0.1, max_move_duration = 0.3,
-                min_click_duration = 0.1, max_click_duration = 0.25,
+                min_move_duration = 0.1, max_move_duration = 0.2,
+                min_click_duration = 0.05, max_click_duration = 0.1,
                 sleep_after_click_sec = 0.2):
 
     rnd_x = x + x_offset + random.uniform(min_x_precision_offset, max_x_precision_offset)
@@ -132,7 +132,7 @@ async def click_location_async(x, y, x_offset = 0, y_offset = 0,
     side_move_x = rnd_x + random.uniform(20, 40) * moreless_x
     side_move_y = rnd_y + random.uniform(20, 40) * moreless_y
 
-    pyautogui.moveTo(side_move_x, side_move_y, random.uniform(0.2, 0.3), pyautogui.easeInBack)
+    pyautogui.moveTo(side_move_x, side_move_y, random.uniform(0.05, 0.1), pyautogui.easeInBack)
     pyautogui.moveTo(rnd_x, rnd_y, random.uniform(min_move_duration, max_move_duration), pyautogui.easeOutBounce)
     pyautogui.click(duration=random.uniform(min_click_duration, max_click_duration))
 
@@ -165,6 +165,35 @@ async def hold_move_async(start_x, start_y, end_x, end_y,
     pyautogui.mouseDown()
     
     pyautogui.moveTo(rnd_end_x, rnd_end_y, random.uniform(min_move_duration, max_move_duration), pyautogui.easeOutBounce)
+    
+    await asyncio.sleep(0.5)
+    pyautogui.mouseUp()
+
+    await asyncio.sleep(sleep_after_click_sec)
+
+
+
+async def hold_move_release_async(start_x, start_y, end_x, end_y, 
+                min_x_precision_offset = 1, max_x_precision_offset = 2,
+                min_y_precision_offset = 1, max_y_precision_offset = 2,
+                min_move_duration = 0.28, max_move_duration = 0.35,
+                sleep_after_click_sec = 0.2):
+ 
+    rnd_x = start_x + random.uniform(min_x_precision_offset, max_x_precision_offset)
+    rnd_y = start_y + random.uniform(min_y_precision_offset, max_y_precision_offset)
+
+    rnd_end_x = end_x + random.uniform(min_x_precision_offset, max_x_precision_offset)
+    rnd_end_y = end_y + random.uniform(min_y_precision_offset, max_y_precision_offset)
+
+    moreless_y = random.randint(-1, 1) 
+    moreless_x = random.randint(-1, 1) 
+    if moreless_y == 0: moreless_y = 1
+    if moreless_x == 0: moreless_x = 1
+ 
+    pyautogui.moveTo(rnd_x, rnd_y, random.uniform(min_move_duration, max_move_duration))
+    pyautogui.mouseDown()
+    
+    pyautogui.moveTo(rnd_end_x, rnd_end_y, random.uniform(min_move_duration, max_move_duration))
     
     await asyncio.sleep(0.5)
     pyautogui.mouseUp()

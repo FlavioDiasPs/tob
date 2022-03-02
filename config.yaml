@@ -1,13 +1,13 @@
 tob:
   press_space_before_and_after_bot: False
 
-spacecrypto:
-  window_name: tob_spacecrypto
-  parameters:
-    spaceship_scroll_limit: 6
-  intervals:
-    wait_for_surrender_sec: 310
-    time_to_speed_victory_sec: 10
+# spacecrypto:
+#   window_name: tob_spacecrypto
+#   parameters:
+#     spaceship_scroll_limit: 6
+#   intervals:
+#     wait_for_surrender_sec: 310
+#     time_to_speed_victory_sec: 10
 
 lunarush:
   window_name: tob_lunarush

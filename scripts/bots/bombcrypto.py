@@ -18,6 +18,7 @@ btn_treasure_hunt_img = Target(cv2.imread('templates/bombcrypto/btn_treasure_hun
 btn_go_work_img = Target(cv2.imread('templates/bombcrypto/btn_go_work.png'), game_area)
 btn_x_img = Target(cv2.imread('templates/bombcrypto/btn_x.png'), game_area)
 btn_connect_wallet_img = Target(cv2.imread('templates/bombcrypto/btn_connect_wallet.png'), game_area)
+btn_connect_metamask_img = Target(cv2.imread('templates/bombcrypto/btn_connect_metamask.png'), game_area)
 btn_home_img = Target(cv2.imread('templates/bombcrypto/btn_home.png'), game_area)
 green_bar_img = Target(cv2.imread('templates/bombcrypto/green_bar.png'), game_area)
 text_error_img = Target(cv2.imread('templates/bombcrypto/text_error.png'), game_area)
@@ -147,6 +148,10 @@ async def connect_wallet():
         
         p.info('Connecting wallet')
         await tob.click_target_center_async(target=btn_connect_wallet_img, expected_result=True, sleep_after_click_sec=1)
+        await handle_error_message()
+
+        p.info('Connecting metamask')
+        await tob.click_target_center_async(target=btn_connect_metamask_img, expected_result=True, sleep_after_click_sec=1)
         await handle_error_message()
 
         p.info('Signing metamask')

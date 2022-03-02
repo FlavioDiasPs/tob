@@ -64,14 +64,14 @@ async def main():
 
 
 def preparation():
-    global current_active_window
+    # global current_active_window
     
     p.info('Preparing to run')
 
     pyautogui.FAILSAFE = False
     tob.close_windows_by_name('Metamask Notification')
     
-    current_active_window = pyautogui.getActiveWindow()
+    # current_active_window = pyautogui.getActiveWindow()
     all_bots_configs = Prodict(yaml.safe_load(open('config.yaml', 'r')))
     
     if all_bots_configs.tob['press_space_before_and_after_bot']:
@@ -81,7 +81,7 @@ def preparation():
 
 
 def finalization(all_bots_configs: Prodict):
-    current_active_window.activate()
+    # current_active_window.activate()
 
     if all_bots_configs.tob['press_space_before_and_after_bot']:
         pyautogui.press('space')
