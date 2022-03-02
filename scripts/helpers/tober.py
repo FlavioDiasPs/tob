@@ -132,7 +132,7 @@ async def click_location_async(x, y, x_offset = 0, y_offset = 0,
     side_move_x = rnd_x + random.uniform(20, 40) * moreless_x
     side_move_y = rnd_y + random.uniform(20, 40) * moreless_y
 
-    pyautogui.moveTo(side_move_x, side_move_y, random.uniform(0.05, 0.1), pyautogui.easeInBack)
+    # pyautogui.moveTo(side_move_x, side_move_y, random.uniform(0.2, 0.3), pyautogui.easeInBack)
     pyautogui.moveTo(rnd_x, rnd_y, random.uniform(min_move_duration, max_move_duration), pyautogui.easeOutBounce)
     pyautogui.click(duration=random.uniform(min_click_duration, max_click_duration))
 
