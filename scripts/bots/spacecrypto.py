@@ -92,6 +92,7 @@ async def run_bot(next_action: Prodict):
 
     except:
         traceback.print_exc()
+        await handle_error_async()
         await tob.refresh_page()
         raise
     
@@ -156,8 +157,6 @@ async def prepare_spaceship_to_fight():
             if retry_count > 4:
                 await tob.refresh_page()
                 raise SpaceCryptoError('The game probably got stuck. Restarting...')
-        
-        await wait_processing_async()
 
         p.info('Waiting for inventory')
         tob.wait_target_appear_disappear(btn_fight_boss_img, expected_result=True)
@@ -198,6 +197,7 @@ async def remove_low_ammo_spaceships_async():
                                                 x_offset=22, y_offset=-5,
                                                 max_y_precision_offset=3, max_x_precision_offset=3,
                                                 sleep_after_click_sec=0)
+        tob.click(5)
 
 
 async def repair_useless_ships():
@@ -237,14 +237,7 @@ async def scroll_up_for_repair():
             scroll_count += 1
             await tob.hold_move_release_async(290, 125, 270, 500, 
                                     max_x_precision_offset=20, max_y_precision_offset=3, sleep_after_click_sec=0.1)
-        tob.click()
-        await asyncio.sleep(0.08)
-        tob.click()
-        await asyncio.sleep(0.08)
-        tob.click()
-        await asyncio.sleep(0.08)
-        tob.click()
-        await asyncio.sleep(0.08)
+        tob.click(5)
 
 
 async def choose_spaceships_async(scroll_limit: int):
@@ -255,15 +248,7 @@ async def choose_spaceships_async(scroll_limit: int):
                                                 x_offset=-20,  y_offset=-3, 
                                                 max_x_precision_offset=10, max_y_precision_offset=10,
                                                 sleep_after_click_sec=0, confidence=0.92) 
-
-        tob.click()
-        await asyncio.sleep(0.08)
-        tob.click()
-        await asyncio.sleep(0.08)
-        tob.click()
-        await asyncio.sleep(0.08)
-        tob.click()
-        await asyncio.sleep(0.08)
+        tob.click(5)
         
         if click_result == False:
             if scroll_count <= scroll_limit:
@@ -291,8 +276,9 @@ async def surrender_fight():
 
 
 async def wait_processing_async():
-    p.info('Waiting processing...')
+    p.info('Waiting processing appear...')
     tob.wait_target_appear_disappear(processing_img, expected_result=True)
+    p.info('Waiting processing disappear...')
     tob.wait_target_appear_disappear(processing_img, expected_result=False)
 
 
@@ -315,8 +301,7 @@ async def handle_error_async():
 
     p.info('Checking possible errors')
     if tob.safe_retry(tob.verify_target_exists, [btn_wait_unresponsive_img], max_attempts=3, expected_result=True):
-        await tob.click_target_center_async(btn_wait_unresponsive_img, sleep_after_click_sec=2)
-        await asyncio.sleep(3)
+        await tob.click_target_center_async(btn_wait_unresponsive_img)
         await tob.refresh_page()
         raise SpaceCryptoError("SpaceCrypto showed an error. Unresponsive. Restarting...")
 

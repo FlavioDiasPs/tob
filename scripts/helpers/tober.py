@@ -78,9 +78,13 @@ def screenshot(search_area: Area()):
 
 
 # targets
-def click():
-    pyautogui.click()
-
+def click(click_amount: int = 1):
+    click_count = 0
+    
+    while(click_count < click_amount):
+        click_count += 1
+        pyautogui.click()
+        time.sleep(0.08)
 
 def move(x, y, duration=random.uniform(0.1, 0.3)):
     pyautogui.moveTo(x, y, duration, pyautogui.easeInBounce)
