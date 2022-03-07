@@ -26,6 +26,7 @@ btn_bau_img = Target(cv2.imread('templates/bombcrypto/btn_bau.png'), game_area)
 bomb_crypto_unavailable_img = Target(cv2.imread('templates/bombcrypto/bomb_crypto_unavailable.png'), game_area)
 bomb_didnt_load_img = Target(cv2.imread('templates/bombcrypto/bomb_didnt_load.png'), game_area)
 loading_img = Target(cv2.imread('templates/bombcrypto/loading.png'), game_area)
+cant_be_reached_img = Target(cv2.imread('templates/chrome/cant_be_reached.png'), game_area)
 
 
 class BombBotError(Exception):
@@ -120,6 +121,10 @@ async def handle_error_message():
         p.info('Handling error message bomb_didnt_load')
         await tob.refresh_page()
         raise BombBotError(" ** BombCrypto displayed an error message: bomb_didnt_load. Restarting...")
+
+    elif tob.safe_retry(tob.verify_target_exists, [cant_be_reached_img], max_attempts=3, expected_result=True):
+        await tob.click_target_center_async(cant_be_reached_img, sleep_after_click_sec=2)
+        raise BombBotError("Site cant be reached, probably there is a internet problem...")
 
 
 async def get_game_ready():

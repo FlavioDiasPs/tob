@@ -40,6 +40,8 @@ defeat = Target(cv2.imread('templates/lunarush/defeat.png'), game_area  )
 victory = Target(cv2.imread('templates/lunarush/victory.png'), game_area)
 error = Target(cv2.imread('templates/lunarush/error.png'), game_area)
 window_is_open = Target(cv2.imread('templates/lunarush/window_is_open.png'), game_area)
+cant_be_reached_img = Target(cv2.imread('templates/chrome/cant_be_reached.png'), game_area)
+
  
 loading_1 = Target(cv2.imread('templates/lunarush/in_game_loading.png'), Area(600, 390, 40, 40)) 
 loading_2 = Target(cv2.imread('templates/lunarush/in_game_loading_2.png'), Area(600, 390, 40, 40)) 
@@ -290,6 +292,10 @@ async def handle_error_async():
     if tob.verify_target_exists(error):
         await tob.click_location_async(random.uniform(100, 300), random.uniform(100, 300))
         raise Exception("Luna Rush showed an error")
+        
+    elif tob.safe_retry(tob.verify_target_exists, [cant_be_reached_img], max_attempts=3, expected_result=True):
+        await tob.click_target_center_async(cant_be_reached_img, sleep_after_click_sec=2)
+        raise Exception("Site cant be reached, probably there is a internet problem...")
 
 
 async def wait_loading():

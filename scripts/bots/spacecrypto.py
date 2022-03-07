@@ -33,6 +33,8 @@ low_ammo_img = Target(cv2.imread('templates/spacecrypto/low_ammo_img.png'), game
 btn_close_img = Target(cv2.imread('templates/spacecrypto/btn_close_img.png'), game_area)
 btn_ok_img = Target(cv2.imread('templates/spacecrypto/btn_ok_img.png'), game_area)
 btn_wait_unresponsive_img = Target(cv2.imread('templates/spacecrypto/btn_wait_unresponsive_img.png'), game_area)
+cant_be_reached_img = Target(cv2.imread('templates/chrome/cant_be_reached.png'), game_area)
+
 
 btn_repair = Target(cv2.imread('templates/spacecrypto/btn_repair.png'), game_area)
 btn_yes = Target(cv2.imread('templates/spacecrypto/btn_yes.png'), game_area)
@@ -312,3 +314,9 @@ async def handle_error_async():
     if tob.safe_retry(tob.verify_target_exists, [btn_ok_img], max_attempts=3, expected_result=True):
         await tob.click_target_center_async(btn_ok_img, sleep_after_click_sec=2)
         raise SpaceCryptoError("SpaceCrypto showed an error. Ok Button Restarting...")
+
+    if tob.safe_retry(tob.verify_target_exists, [cant_be_reached_img], max_attempts=3, expected_result=True):
+        await tob.click_target_center_async(cant_be_reached_img, sleep_after_click_sec=2)
+        raise SpaceCryptoError("Site cant be reached, probably there is a internet problem...")
+
+        
