@@ -27,6 +27,9 @@ bomb_crypto_unavailable_img = Target(cv2.imread('templates/bombcrypto/bomb_crypt
 bomb_didnt_load_img = Target(cv2.imread('templates/bombcrypto/bomb_didnt_load.png'), game_area)
 loading_img = Target(cv2.imread('templates/bombcrypto/loading.png'), game_area)
 cant_be_reached_img = Target(cv2.imread('templates/chrome/cant_be_reached.png'), game_area)
+user_login_img = Target(cv2.imread('templates/bombcrypto/user_login_img.png'), game_area)
+pass_login_img = Target(cv2.imread('templates/bombcrypto/pass_login_img.png'), game_area)
+btn_login_img = Target(cv2.imread('templates/bombcrypto/btn_login_img.png'), game_area)
 
 
 class BombBotError(Exception):
@@ -49,7 +52,7 @@ async def run_bot(next_action: Prodict):
     
         await handle_error_message()
         await check_load_screen()
-        await get_game_ready()
+        await get_game_ready(win)
         await handle_error_message()
 
         now = get_now()  
@@ -127,10 +130,10 @@ async def handle_error_message():
         raise BombBotError("Site cant be reached, probably there is a internet problem...")
 
 
-async def get_game_ready():
+async def get_game_ready(window):
 
     if is_connected() == False:
-        return await connect_wallet()
+        return await connect_wallet(window)
     return True
 
 
@@ -147,21 +150,37 @@ def is_connected():
         return False
 
 
-async def connect_wallet():
+async def connect_wallet(window):
 
     try:
-        
+
         p.info('Connecting wallet')
         await tob.click_target_center_async(target=btn_connect_wallet_img, expected_result=True, sleep_after_click_sec=1)
         await handle_error_message()
+        
+        import yaml
+        all_accounts = Prodict(yaml.safe_load(open('bomb_scholar.yaml', 'r')))
 
-        p.info('Connecting metamask')
-        await tob.click_target_center_async(target=btn_connect_metamask_img, expected_result=True, sleep_after_click_sec=1)
-        await handle_error_message()
+        if window.title in all_accounts:
+            user = str(all_accounts[window.title]['user'])
+            password = str(all_accounts[window.title]['pass'])
 
-        p.info('Signing metamask')
-        await metamask.signin()
-        await check_game_loaded()
+
+            await tob.safe_click_target_center_async(user_login_img,  x_offset=30)
+            pyautogui.write(user)
+            await tob.safe_click_target_center_async(pass_login_img,  x_offset=30)
+            pyautogui.write(password)
+            await tob.safe_click_target_center_async(btn_login_img)
+
+        else:
+
+            p.info('Connecting metamask')
+            await tob.click_target_center_async(target=btn_connect_metamask_img, expected_result=True, sleep_after_click_sec=1)
+            await handle_error_message()
+
+            p.info('Signing metamask')
+            await metamask.signin()
+            await check_game_loaded()
 
     except:
         await tob.refresh_page()
