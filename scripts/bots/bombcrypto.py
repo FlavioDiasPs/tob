@@ -1,5 +1,6 @@
 import asyncio
 import cv2
+import yaml
 import pyautogui
 import helpers.tober as tob
 import helpers.metamask as metamask
@@ -8,9 +9,10 @@ from helpers.printfier import Printer
 from helpers.tober import Target, Area
 from datetime import datetime
 from prodict import Prodict
+from os.path import exists
 
 
-game_area = Area(-8, -8, 703, 557)
+game_area = Area(-8, -8, 800, 630)
 
 btn_back_img = Target(cv2.imread('templates/bombcrypto/btn_back.png'), game_area)
 btn_heroes_img = Target(cv2.imread('templates/bombcrypto/btn_heroes.png'), game_area)
@@ -153,23 +155,26 @@ def is_connected():
 async def connect_wallet(window):
 
     try:
-
         p.info('Connecting wallet')
         await tob.click_target_center_async(target=btn_connect_wallet_img, expected_result=True, sleep_after_click_sec=1)
         await handle_error_message()
         
-        import yaml
-        all_accounts = Prodict(yaml.safe_load(open('bomb_scholar.yaml', 'r')))
+        scholar_path = 'bomb_scholar.yaml'
+        file_exists = exists(scholar_path)
 
-        if window.title in all_accounts:
+        if file_exists:
+            all_accounts = Prodict(yaml.safe_load(open(scholar_path, 'r')))
+
+        if file_exists and window.title in all_accounts:
             user = str(all_accounts[window.title]['user'])
             password = str(all_accounts[window.title]['pass'])
 
-
             await tob.safe_click_target_center_async(user_login_img,  x_offset=30)
             pyautogui.write(user)
+
             await tob.safe_click_target_center_async(pass_login_img,  x_offset=30)
             pyautogui.write(password)
+            
             await tob.safe_click_target_center_async(btn_login_img)
 
         else:
