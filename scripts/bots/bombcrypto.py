@@ -144,7 +144,8 @@ def is_connected():
 
     p.info('Checking if you are connected')
 
-    if tob.safe_retry(tob.verify_target_exists, params=[btn_bau_img], expected_result=True, attempt_delay=0.1):
+    if tob.safe_retry(tob.verify_target_exists, params=[btn_bau_img], expected_result=True, 
+                                                attempt_delay=0.1, max_attempts=10):
         p.info('You are connected')
         return True
     else:
