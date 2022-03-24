@@ -37,7 +37,8 @@
 
 # SUPORT
 ## There is no support for this project.
-## If you need any customization or particular help, we can talk about a price so I can spend time on it. flaviodiasps@gmail.com
+- If you need any customization or particular help, we can talk about a price so I can spend time on it. 
+- Get in touch: flaviodiasps@gmail.com
 
 # How to SETUP
 ## Installing TOB requirements
@@ -78,6 +79,14 @@ Example: "wait_for_surrender_sec"= Duration in seconds that each window will wai
 - WINDOW NAME: tob_bombcrypto
 - **send_heroes_to_work_sec**: Seconds to wait before calling the bot to send new heroes to work
 - **refresh_heroes_positions_sec**: Seconds to wait before calling the bot to refresh heroes positions
+#### Scholar
+- There is a file named bomb_scholar.yaml in the project
+- In order to use scholar, yo just need to fill this file with the window name, username and password of your scholar accounts.
+`
+1_tob_bombcrypto: -> "1_tob_bombcrypto" is the chrome or brave window name
+  user: 123
+  pass: 123
+`
 ### LunaRush
 - ZOOM: 67%
 - WINDOW NAME: tob_lunarush
