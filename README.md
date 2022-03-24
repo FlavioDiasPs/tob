@@ -1,5 +1,6 @@
 # TOB - The Only Bot
-## A completely FREE, OPENSOURCE game bot orchestrator.
+## Run BombCrypto, LunaRush, SpaceCrypto multi account, multi game, multi window all in the same machine.
+### TOB is a completely FREE, OPENSOURCE game bot orchestrator.
 - TOB easily runs multiple bots, for multiple accounts, multiple games, multiple windows with a few configurations
 - You can run as many windows as your computer can handle
 - Supported Games
