@@ -56,8 +56,8 @@
 7. Right-Click on the top of the window (not in the tab, in the window). It will show a rename option in the menu. Rename it to tob_"GameName". Example: tob_bombcrypto. If you have multiple windows for the same game you can add anything to the name. Example: "1 - tob_bombcrypto", "my tob_bombcrypto 2". Windows will run in lexicographic order.
 8. **You must ZOOM OUT the window to 67% zoom. This is the best way I found to fit more windows in the same monitor (cryptopiece is an exception, it has to be 50%)**
 9. **If the game has the option to decrease graphic quality, you must put it in the lowest possible, like it is in LunaRush otherwise TOB won't work** 
-10. If you have multiple windows, organize them in a way they don't complete overlapp the other. **They can be at almost 100% overlapping, but some games stop if they are completely blocked by another window or minimized**
-11. All necessary stuff is configured, but bo won't work yet. Every game might have a different need. Lets configure them.
+10. If you have multiple windows, organize them in a way they don't complete overlap each other. **They can be at almost 100% overlapping, but some games stop if they are completely blocked by another window or minimized**
+11. All necessary stuff is configured, but we are no ready yet. Every game might have a different need. Lets configure them!
 
 ## Configuring games
 ### config.yaml
@@ -74,9 +74,10 @@ spacecrypto:
     wait_for_surrender_sec: 310
     time_to_speed_victory_sec: 10
 ```
-These are different configurations for each game, so you can customize a few things. 
-Example: "wait_for_surrender_sec"= Duration in seconds that each window will wait before surrendering.
-**TOB might not run it in a precise time. If another game bot is running at the time a specific window should run, this window will have to wait until the game bot ends**
+- These are different configurations for each game, so you can customize a few things. 
+- **You don't need to change this. The default configuration should be good to go.**
+- Example: "wait_for_surrender_sec"= Duration in seconds that each window will wait before surrendering.
+- **TOB might not run it in a precise time. If another game bot is running at the time a specific window should run, this window will have to wait until the game bot ends**
 
 ## Games configuration
 ### BombCrypto
