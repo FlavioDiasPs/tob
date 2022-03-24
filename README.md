@@ -35,6 +35,10 @@
   - **PIX**: d9298453-6fa2-4c24-969b-c9027666cb5e
 
 
+# SUPORT
+## There is no support for this project.
+## If you need any customization or particular help, we can talk about a price so I can spend time on it. flaviodiasps@gmail.com
+
 # How to SETUP
 ## Installing TOB requirements
 1. Download this project
