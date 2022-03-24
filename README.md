@@ -3,6 +3,7 @@
 ### TOB is a completely FREE, OPENSOURCE game bot orchestrator.
 - TOB easily runs multiple bots, for multiple accounts, multiple games, multiple windows with a few configurations
 - You can run as many windows as your computer can handle
+- TOB handles most of game errors for you. It will refresh the window whenever it encounters a error.
 - Supported Games
   - BombCrypto (scholar included)
   - LunaRush
@@ -52,12 +53,13 @@
 3. Double-Click in install.bat file. This will install the project dependencies.
 4. Open your browser (It was tested only on chrome and brave)
 5. Install metamask extension (put it in english)
-6. Go to the game website, example: https://app.bombcrypto.io/
-7. Right-Click on the top of the window (not in the tab, in the window). It will show a rename option in the menu. Rename it to tob_"GameName". Example: tob_bombcrypto. If you have multiple windows for the same game you can add anything to the name. Example: "1 - tob_bombcrypto", "my tob_bombcrypto 2". Windows will run in lexicographic order.
-8. **You must ZOOM OUT the window to 67% zoom. This is the best way I found to fit more windows in the same monitor (cryptopiece is an exception, it has to be 50%)**
-9. **If the game has the option to decrease graphic quality, you must put it in the lowest possible, like it is in LunaRush otherwise TOB won't work** 
-10. If you have multiple windows, organize them in a way they don't complete overlap each other. **They can be at almost 100% overlapping, but some games stop if they are completely blocked by another window or minimized**
-11. All necessary stuff is configured, but we are no ready yet. Every game might have a different need. Lets configure them!
+6. Unlock the metamask (TOB don't know and won't ask for your password, you should leave metamask signed)
+7. Go to the game website, example: https://app.bombcrypto.io/
+8. Right-Click on the top of the window (not in the tab, in the window). It will show a rename option in the menu. Rename it to tob_"GameName". Example: tob_bombcrypto. If you have multiple windows for the same game you can add anything to the name. Example: "1 - tob_bombcrypto", "my tob_bombcrypto 2". Windows will run in lexicographic order.
+9. **You must ZOOM OUT the window to 67% zoom. This is the best way I found to fit more windows in the same monitor (cryptopiece is an exception, it has to be 50%)**
+10. **If the game has the option to decrease graphic quality, you must put it in the lowest possible, like it is in LunaRush otherwise TOB won't work** 
+11. If you have multiple windows, organize them in a way they don't complete overlap each other. **They can be at almost 100% overlapping, but some games stop if they are completely blocked by another window or minimized**
+12. All necessary stuff is configured, but we are no ready yet. Every game might have a different need. Lets configure them!
 
 ## Configuring games
 ### config.yaml
@@ -77,7 +79,7 @@ spacecrypto:
 - These are different configurations for each game, so you can customize a few things. 
 - **You don't need to change this. The default configuration should be good to go.**
 - Example: "wait_for_surrender_sec"= Duration in seconds that each window will wait before surrendering.
-- **TOB might not run it in a precise time. If another game bot is running at the time a specific window should run, this window will have to wait until the game bot ends**
+- **TOB won't be precise in time. If a game is running and it is time to run another window, the new window will wait until the current game ends**
 
 ## Games configuration
 ### BombCrypto
