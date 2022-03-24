@@ -1,6 +1,6 @@
 # TOB - The Only Bot
 ## A completely FREE, OPENSOURCE game bot orchestrator.
-- TOB is lightweight and easily runs multiple bots, for multiple accounts, multiple games, multiple windows with a few configurations
+- TOB easily runs multiple bots, for multiple accounts, multiple games, multiple windows with a few configurations
 - You can run as many windows as your computer can handle
 - Supported Games
   - BombCrypto (scholar included)
