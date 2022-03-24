@@ -30,7 +30,10 @@
 
 
 # CONTRIBUTION
-##
+## Belive me, I am not rich.
+If TOB is helping you saving lots of time time, few free to donate the value you think it is fair for my work: 
+METAMASK BSC: 0x12198f741eddF0dB5450E16bA197027492bC9f98
+PIX: d9298453-6fa2-4c24-969b-c9027666cb5e
 
 
 # How to SETUP
