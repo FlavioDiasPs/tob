@@ -11,6 +11,8 @@
   - CryptoPiece (4 heroes)
   - Want another game? Lets talk about it: flaviodiasps@gmail.com
 
+![tob](https://user-images.githubusercontent.com/1843203/159995426-cd419d60-0761-4870-bd77-16ad758404cc.jpeg)
+
 ## TOB works through image recognition and by simulating mouse moves/clicks
 - TOB won't ask any information
 - TOB won't read your personal data
