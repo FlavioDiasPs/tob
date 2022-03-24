@@ -20,8 +20,6 @@
 # Notes
 - For technical reasons, **TOB only works on computers running windows**, even though it is made in python =(
 - Every file is readable and you can open with notepad, vscode or any other text editor.
-- **TOB only works with an english metamask**
-- You can open as many accounts / windows your computer can handle
 - It is better if you don't use the computer while the bot is running. You might disturb it by moving your mouse.
 - If you want to use the computer while the bot is running you have a few options
   - If the game that is running has high wait durations, you can use it as long as the bot is not trying to use
