@@ -37,6 +37,7 @@
   - **METAMASK BSC**: 0x12198f741eddF0dB5450E16bA197027492bC9f98
   - **PIX**: d9298453-6fa2-4c24-969b-c9027666cb5e
   - **PIX**: https://nubank.com.br/pagar/inxmy/PAYI3sidz6
+  - ![PIX](https://user-images.githubusercontent.com/1843203/160001954-59f230de-6586-41d7-b97f-67ff026162ad.png)
 
 
 # SUPORT
