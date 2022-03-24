@@ -119,24 +119,23 @@ Example: "wait_for_surrender_sec"= Duration in seconds that each window will wai
 ### There you can define things like: Click duration, mouse move duration, anti bot fake random moves, auto retry and many more. 
 
 
-FAQ
-# I click start but the terminal window closes instantly
+# FAQ
+## I click start but the terminal window closes instantly
 - You probably didn't install dependencies
 - You probably didn't add python variable in the path during install setup
 
-# TOB opens but stops asking me to rename all windows
+## TOB opens but stops asking me to rename all windows
 - You must rename the window of the game to the correct name. For bombcrypto would be "anything you want here"tob_bombcrypto"anything you want here"
 - Do not rename all windows with the same name, TOB will get confused and behave unexpectedly 
 
-# TOB is not signing in to my metamask
+## TOB is not signing in to my metamask
 - Check if your metamask in english
 - Make sure Metamask is not asking for you password. (TOB needs that you leave your metamask logged)
 
-# TOB is running but not working properly in the game
+## TOB is running but not working properly in the game
 - Make sure window zoom is correct
 - Read the error message, it might help figure out what happened.
 - If TOB is still not working,  it might not be recognizing the images in you monitor
   - Go to the templates folder. There is a folder for each game.
   - There you can see all the pictures that the game bot will try to recognize. 
   - Replace them, so the bot can recognize as it is in your computer.
-
