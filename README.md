@@ -57,7 +57,7 @@
 ## Configuring games
 ### config.yaml
 1. The config.yaml file might look like this:
-`
+```
 tob:
   press_space_before_and_after_bot: False
 
@@ -68,7 +68,7 @@ spacecrypto:
   intervals:
     wait_for_surrender_sec: 310
     time_to_speed_victory_sec: 10
-`
+```
 These are different configurations for each game, so you can customize a few things. 
 Example: "wait_for_surrender_sec"= Duration in seconds that each window will wait before surrendering.
 **TOB might not run it in a precise time. If another game bot is running at the time a specific window should run, this window will have to wait until the game bot ends**
@@ -82,11 +82,11 @@ Example: "wait_for_surrender_sec"= Duration in seconds that each window will wai
 #### Scholar
 - There is a file named bomb_scholar.yaml in the project
 - In order to use scholar, yo just need to fill this file with the window name, username and password of your scholar accounts.
-`
+```
 1_tob_bombcrypto: -> "1_tob_bombcrypto" is the chrome or brave window name
   user: 123
   pass: 123
-`
+```
 ### LunaRush
 - ZOOM: 67%
 - WINDOW NAME: tob_lunarush
@@ -114,9 +114,9 @@ Example: "wait_for_surrender_sec"= Duration in seconds that each window will wai
 
 
 ## Are you a DEV?
-### Check tober.py file. You will be able to create new bots, compatible with tob, in a less then 3 hours.
-### tober is a helper that has everythin you need to find, wait, click images in the window with lots of customizable parameters
-### There you can define things like: Click duration, mouse move duration, anti bot fake random moves, auto retry and many more. 
+- Check tober.py file. You will be able to create new bots, compatible with tob, in a less then 3 hours.
+- tober is a helper that has everythin you need to find, wait, click images in the window with lots of customizable parameters
+- There you can define things like: Click duration, mouse move duration, anti bot fake random moves, auto retry and many more. 
 
 
 # FAQ
