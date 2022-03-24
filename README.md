@@ -73,32 +73,39 @@ Example: "wait_for_surrender_sec"= Duration in seconds that each window will wai
 ### BombCrypto
 - ZOOM: 67%
 - WINDOW NAME: tob_bombcrypto
-- send_heroes_to_work_sec: Seconds to wait before calling the bot to send new heroes to work
-- refresh_heroes_positions_sec: Seconds to wait before calling the bot to refresh heroes positions
+- **send_heroes_to_work_sec**: Seconds to wait before calling the bot to send new heroes to work
+- **refresh_heroes_positions_sec**: Seconds to wait before calling the bot to refresh heroes positions
 ### LunaRush
 - ZOOM: 67%
 - WINDOW NAME: tob_lunarush
 - Graphic Quality: Low
-- extra_wait_time_during_dawn_sec: Removed
-- battle_not_ended_max_retries: Amount of times the bot will check the bot to see if battle has ended before throwing an error
-- wait_for_battle_sec: Amount of secongs to wait for the end of battle
-- wait_for_energy_sec: Seconds to wait for energy recovery
-- battle_not_ended_yet_sec: Extra seconds to wait in the case the battle is still happening 
+- **extra_wait_time_during_dawn_sec**: Removed
+- **battle_not_ended_max_retries**: Amount of times the bot will check the bot to see if battle has ended before throwing an error
+- **wait_for_battle_sec**: Amount of secongs to wait for the end of battle
+- **wait_for_energy_sec**: Seconds to wait for energy recovery
+- **battle_not_ended_yet_sec**: Extra seconds to wait in the case the battle is still happening 
 ### SpaceCrypto
 - ZOOM: 67%
 - WINDOW NAME: tob_spacecrypto
-- spaceship_scroll_limit: Amount of times that it will scroll down to search for new spaceships with available energy
-- wait_for_surrender_sec: Seconds to wait before surrendering
-- time_to_speed_victory_sec: Seconds to wait before checking if there is a victory button to click
+- **spaceship_scroll_limit**: Amount of times that it will scroll down to search for new spaceships with available energy
+- **wait_for_surrender_sec**: Seconds to wait before surrendering
+- **time_to_speed_victory_sec**: Seconds to wait before checking if there is a victory button to click
 ### CryptoPiece
 - ZOOM: 50%
 - WINDOW NAME: tob_cryptopiece
 - **Only works for accounts with 4 characters**
-- wait_for_stamina_sec: Seconds to wait for stamina recovery
+- **wait_for_stamina_sec**: Seconds to wait for stamina recovery
 ### AgroFarm
 - ZOOM: 67%
 - WINDOW NAME: tob_agrofarm
-- wait_time_when_no_crop_left_sec: Seconds to wait for new crops to farm
+- **wait_time_when_no_crop_left_sec**: Seconds to wait for new crops to farm
+
+
+## Are you a DEV?
+### Check tober.py file. You will be able to create new bots, compatible with tob, in a less then 3 hours.
+### tober is a helper that has everythin you need to find, wait, click images in the window with lots of customizable parameters
+### There you can define things like: Click duration, mouse move duration, anti bot fake random moves, auto retry and many more. 
+
 
 FAQ
 # I click start but the terminal window closes instantly
