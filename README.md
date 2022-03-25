@@ -129,7 +129,7 @@ spacecrypto:
 - There you can define things like: Click duration, mouse move duration, anti bot fake random moves, auto retry and many more. 
 
 
-# FAQ
+# Troubleshooting
 ## I click start but the terminal window closes instantly
 - You probably didn't install dependencies
 - You probably didn't add python variable in the path during install setup
