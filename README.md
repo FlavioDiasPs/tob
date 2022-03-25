@@ -63,7 +63,8 @@
 
 ## Configuring games
 
-- **You don't need to change this. The default configuration should be good to go.**
+- **You almost don't need to change this. The default configuration should be good to go.**
+- **The content in this file is commented. You must uncomment only the configurations for the games that you play**
 
 ### config.yaml
 1. The config.yaml file might look like this:
