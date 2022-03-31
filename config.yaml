@@ -1,6 +1,9 @@
 tob:
   press_space_before_and_after_bot: False
 
+# You must remove the # character in the configs below
+# Remove it only for the games you are playing, otherwise, TOB will fail
+
 # spacecrypto:
 #   window_name: tob_spacecrypto
 #   parameters:
