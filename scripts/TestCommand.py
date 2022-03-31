@@ -45,11 +45,15 @@ from prodict import Prodict
 # win.resizeTo(game_area.width, game_area.height)
 # win.moveTo(game_area.left, game_area.top)
 
-# while(True):
-#     print(pyautogui.mouseinfo.position())
-#     time.sleep(0.5)
+while(True):
+    print(pyautogui.mouseinfo.position())
+    time.sleep(0.5)
 
-asyncio.run(tob.hold_move_async(270, 300, 290, 125, max_x_precision_offset=2, min_move_duration=0.5, max_move_duration=0.8))
+
+(730, 550, 200, 70)
+(930, 620)
+
+# asyncio.run(tob.hold_move_async(270, 300, 290, 125, max_x_precision_offset=2, min_move_duration=0.5, max_move_duration=0.8))
 
 # search_area = tob.Area(50, 520, 220, 100)
 

@@ -11,7 +11,7 @@ from helpers.tober import Area, Target
 from helpers.printfier import Printer
 
 
-game_area = Area(-8, -8, 685 , 520)
+game_area = Area(-8, -8, 1000 , 750)
 p = Printer("LunaRush")
    
 battle_not_ended_yet_sec = 0
@@ -22,29 +22,36 @@ loading = Target(cv2.imread('templates/lunarush/loading.png'), game_area)
 helios_brand = Target(cv2.imread('templates/lunarush/helios_brand.png'), game_area)
 btn_login_with_metamask = Target(cv2.imread('templates/lunarush/btn_login_with_metamask.png'), game_area)
 
-btn_boss_hunt_start_game = Target(cv2.imread('templates/lunarush/btn_boss_hunt_start_game.png'), Area(60, 145, 145, 215))
+btn_boss_hunt_start_game = Target(cv2.imread('templates/lunarush/btn_boss_hunt_start_game.png'), game_area)
 btn_tap_to_open = Target(cv2.imread('templates/lunarush/btn_tap_to_open.png'), game_area)
 btn_available_boss = Target(cv2.imread('templates/lunarush/btn_available_boss.png'), game_area)
 
-in_battle_versus = Target(cv2.imread('templates/lunarush/in_battle_versus.png'), Area(315, 90, 40, 30))
-btn_boss_hunt = Target(cv2.imread('templates/lunarush/btn_boss_hunt.png'), Area(490, 390, 150, 50))
+in_battle_versus = Target(cv2.imread('templates/lunarush/in_battle_versus.png'), game_area)
+btn_boss_hunt = Target(cv2.imread('templates/lunarush/btn_boss_hunt.png'), Area(730, 550, 200, 70))
  
-selected_hero_no_energy = Target(cv2.imread('templates/lunarush/selected_hero_no_energy.png'), Area(160, 230, 370, 30))
-selected_hero_energy = Target(cv2.imread('templates/lunarush/selected_hero_energy.png'), Area(160, 230, 370, 30))
+selected_hero_no_energy = Target(cv2.imread('templates/lunarush/selected_hero_no_energy.png'), Area(230, 310, 550, 40))
+selected_hero_one_energy = Target(cv2.imread('templates/lunarush/selected_hero_one_energy.png'), Area(230, 310, 550, 40))
+selected_hero_two_energy = Target(cv2.imread('templates/lunarush/selected_hero_two_energy.png'), Area(230, 310, 550, 40))
+selected_hero_three_energy = Target(cv2.imread('templates/lunarush/selected_hero_three_energy.png'), Area(230, 310, 550, 40))
 
-unselected_hero_energy = Target(cv2.imread('templates/lunarush/unselected_hero_energy.png'), Area(15, 150, 135, 280))
-unselected_hero_energy_part2 = Target(cv2.imread('templates/lunarush/unselected_hero_energy.png'), Area(20, 250, 130, 180))
+unselected_hero_one_energy = Target(cv2.imread('templates/lunarush/unselected_hero_one_energy.png'), Area(15, 195, 195, 400))
+unselected_hero_one_energy_part2 = Target(cv2.imread('templates/lunarush/unselected_hero_one_energy.png'), Area(15, 195, 195, 400))
+
+unselected_hero_two_energy = Target(cv2.imread('templates/lunarush/unselected_hero_two_energy.png'), Area(15, 195, 195, 400))
+unselected_hero_two_energy_part2 = Target(cv2.imread('templates/lunarush/unselected_hero_two_energy.png'), Area(15, 195, 195, 400))
+
+unselected_hero_three_energy = Target(cv2.imread('templates/lunarush/unselected_hero_three_energy.png'), Area(15, 195, 195, 400))
+unselected_hero_three_energy_part2 = Target(cv2.imread('templates/lunarush/unselected_hero_three_energy.png'), Area(15, 195, 195, 400))
 
 notice = Target(cv2.imread('templates/lunarush/notice.png'), game_area) 
-defeat = Target(cv2.imread('templates/lunarush/defeat.png'), game_area  )
+defeat = Target(cv2.imread('templates/lunarush/defeat.png'), game_area)
 victory = Target(cv2.imread('templates/lunarush/victory.png'), game_area)
 error = Target(cv2.imread('templates/lunarush/error.png'), game_area)
 window_is_open = Target(cv2.imread('templates/lunarush/window_is_open.png'), game_area)
 cant_be_reached_img = Target(cv2.imread('templates/chrome/cant_be_reached.png'), game_area)
 
- 
-loading_1 = Target(cv2.imread('templates/lunarush/in_game_loading.png'), Area(600, 390, 40, 40)) 
-loading_2 = Target(cv2.imread('templates/lunarush/in_game_loading_2.png'), Area(600, 390, 40, 40)) 
+loading_1 = Target(cv2.imread('templates/lunarush/in_game_loading.png'), game_area) 
+loading_2 = Target(cv2.imread('templates/lunarush/in_game_loading_2.png'), game_area) 
 
 
 class LunaRushError(Exception):
@@ -100,8 +107,7 @@ async def heroes_battle():
     await handle_preparation()
 
     p.info('Removing selected heroes without energy')
-    await tob.click_all_targets_center_async(selected_hero_no_energy, x_offset=random.randint(50, 70))   
-    await asyncio.sleep(3)
+    await tob.click_all_targets_center_async(selected_hero_no_energy, x_offset=random.randint(50, 70), sleep_after_click_sec=2)       
 
     return await prepare_and_fight()
 
@@ -179,7 +185,7 @@ async def handle_preparation():
         p.info('Taking rewards from battle')
          
         while tob.anyone(tob.verify_target_exists, [defeat, victory]):
-            await tob.click_target_center_async(btn_tap_to_open, sleep_after_click_sec=2)
+            await tob.safe_click_target_center_async(btn_tap_to_open, sleep_after_click_sec=2)
             await tob.click_location_async(x=random.randint(250, 350), y=random.randint(250, 350))
 
     elif tob.safe_retry(tob.verify_target_exists, [victory], max_attempts=10, expected_result=True): 
@@ -206,27 +212,29 @@ async def handle_preparation():
 async def prepare_and_fight():
     p.info('Checking amount of selected heroes able to fight')   
 
-    amount_heroes_selected = tob.verify_target_ocorrency_amount(selected_hero_energy) 
+    amount_heroes_selected = tob.verify_target_ocorrency_amount(selected_hero_one_energy) 
+    amount_heroes_selected += tob.verify_target_ocorrency_amount(selected_hero_two_energy) 
+    amount_heroes_selected += tob.verify_target_ocorrency_amount(selected_hero_three_energy) 
     if amount_heroes_selected >= 3:
         await run_battle()
         return wait_for_battle_sec
 
-    amount_heroes_selected = await add_heroes_to_fight(unselected_hero_energy, amount_heroes_selected)
+    amount_heroes_selected = await select_heroes_to_fight(amount_heroes_selected)
     if amount_heroes_selected >= 3:
         await run_battle()     
         return wait_for_battle_sec
 
-    await tob.hold_move_async(150, 200, 154, 296)
-    amount_heroes_selected = await add_heroes_to_fight(unselected_hero_energy, amount_heroes_selected)
+    await tob.hold_move_async(208, 295, 206, 433)
+    amount_heroes_selected = await select_heroes_to_fight(amount_heroes_selected)
         
     if amount_heroes_selected >= 3:
         await run_battle() 
         return wait_for_battle_sec 
 
-    await tob.hold_move_async(150, 296, 154, 370)
-    amount_heroes_selected = await add_heroes_to_fight(unselected_hero_energy_part2, amount_heroes_selected)    
+    await tob.hold_move_async(206, 433, 209, 554)
+    amount_heroes_selected = await select_heroes_to_fight_part2(amount_heroes_selected)    
     
-    await tob.hold_move_async(150, 370, 154, 200)
+    await tob.hold_move_async(209, 554, 208, 295)
 
     if amount_heroes_selected <= 0: 
         return wait_for_energy_sec
@@ -235,12 +243,39 @@ async def prepare_and_fight():
         return wait_for_battle_sec
 
 
+async def select_heroes_to_fight(amount_heroes_selected = 0):
+
+    amount_heroes_selected = await add_heroes_to_fight(unselected_hero_three_energy, amount_heroes_selected)
+
+    if amount_heroes_selected < 3:
+        amount_heroes_selected += await add_heroes_to_fight(unselected_hero_two_energy, amount_heroes_selected)
+
+    if amount_heroes_selected < 3:
+        amount_heroes_selected += await add_heroes_to_fight(unselected_hero_one_energy, amount_heroes_selected)
+
+    return amount_heroes_selected
+
+
+async def select_heroes_to_fight_part2(amount_heroes_selected = 0):
+
+    p.info('Selecting more heroes to participate in battle')
+
+    amount_heroes_selected = await add_heroes_to_fight(unselected_hero_three_energy_part2, amount_heroes_selected)
+
+    if amount_heroes_selected < 3:
+        amount_heroes_selected += await add_heroes_to_fight(unselected_hero_two_energy_part2, amount_heroes_selected)
+
+    if amount_heroes_selected < 3:
+        amount_heroes_selected += await add_heroes_to_fight(unselected_hero_one_energy_part2, amount_heroes_selected)
+
+    return amount_heroes_selected
+
+
 async def add_heroes_to_fight(target, amount_heroes_selected = 0):
     
     tob.move(random.uniform(30, 120), random.uniform(150,  190))
 
-    p.info('Selecting more heroes to participate in battle')
-    heroes_locations = await tob.find_targets_centers_async(target, confidence=0.85)
+    heroes_locations = await tob.find_targets_centers_async(target, confidence=0.95)
 
     for hero_location in heroes_locations:        
   
@@ -269,7 +304,7 @@ async def wait_in_battle():
     retry_count = 0
     retry_limit = 10
 
-    while retry_count < retry_limit and tob.verify_target_exists(in_battle_versus, confidence=0.8) == False:
+    while retry_count < retry_limit and tob.verify_target_exists(in_battle_versus, confidence=0.7) == False:
 
         if tob.verify_target_exists(notice):
             tob.click()
@@ -301,5 +336,5 @@ async def handle_error_async():
 async def wait_loading():
 
     while(tob.anyone_multi_param(tob.verify_target_exists, [(loading_1, 0.6), (loading_2, 0.6)])):
-        p.r_info("Waiting load")
+        p.r_info("Waiting")
         await asyncio.sleep(0.1)
