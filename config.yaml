@@ -4,36 +4,36 @@ tob:
 # You must remove the # character in the configs below
 # Remove it only for the games you are playing, otherwise, TOB will fail
 
-lunarush:
-  window_name: tob_lunarush
-  parameters:
-    extra_wait_time_during_dawn_sec: 3600
-    battle_not_ended_max_retries: 5
-  intervals: 
-    wait_for_battle_sec: 45
-    wait_for_energy_sec: 7200
-    battle_not_ended_yet_sec: 10
+# lunarush:
+#   window_name: tob_lunarush
+#   parameters:
+#     extra_wait_time_during_dawn_sec: 3600
+#     battle_not_ended_max_retries: 5
+#   intervals: 
+#     wait_for_battle_sec: 45
+#     wait_for_energy_sec: 7200
+#     battle_not_ended_yet_sec: 10
 
-spacecrypto:
-  window_name: tob_spacecrypto
-  parameters:
-    spaceship_scroll_limit: 3
-  intervals:
-    wait_for_surrender_sec: 310
-    time_to_speed_victory_sec: 10
+# spacecrypto:
+#   window_name: tob_spacecrypto
+#   parameters:
+#     spaceship_scroll_limit: 3
+#   intervals:
+#     wait_for_surrender_sec: 310
+#     time_to_speed_victory_sec: 10
 
-bombcrypto:
-  window_name: tob_bombcrypto
-  intervals: 
-    send_heroes_to_work_sec: 1800
-    refresh_heroes_positions_sec: 600
+# bombcrypto:
+#   window_name: tob_bombcrypto
+#   intervals: 
+#     send_heroes_to_work_sec: 1800
+#     refresh_heroes_positions_sec: 600
 
-cryptopiece:
-  window_name: tob_cryptopiece
-  intervals:
-    wait_for_stamina_sec: 1800
+# cryptopiece:
+#   window_name: tob_cryptopiece
+#   intervals:
+#     wait_for_stamina_sec: 1800
 
-agrofarm:  
-  window_name: tob_agrofarm
-  intervals:
-    wait_time_when_no_crop_left_sec: 14400
+# agrofarm:  
+#   window_name: tob_agrofarm
+#   intervals:
+#     wait_time_when_no_crop_left_sec: 14400
