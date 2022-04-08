@@ -4,15 +4,15 @@ tob:
 # You must remove the # character in the configs below
 # Remove it only for the games you are playing, otherwise, TOB will fail
 
-# lunarush:
-#   window_name: tob_lunarush
-#   parameters:
-#     extra_wait_time_during_dawn_sec: 3600
-#     battle_not_ended_max_retries: 5
-#   intervals: 
-#     wait_for_battle_sec: 45
-#     wait_for_energy_sec: 7200
-#     battle_not_ended_yet_sec: 10
+lunarush:
+  window_name: tob_lunarush
+  parameters:
+    extra_wait_time_during_dawn_sec: 3600
+    battle_not_ended_max_retries: 5
+  intervals: 
+    wait_for_battle_sec: 45
+    wait_for_energy_sec: 7200
+    battle_not_ended_yet_sec: 10
 
 # spacecrypto:
 #   window_name: tob_spacecrypto

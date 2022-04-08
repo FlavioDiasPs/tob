@@ -212,9 +212,9 @@ async def handle_preparation():
 async def prepare_and_fight():
     p.info('Checking amount of selected heroes able to fight')   
 
-    amount_heroes_selected = tob.verify_target_ocorrency_amount(selected_hero_one_energy) 
-    amount_heroes_selected += tob.verify_target_ocorrency_amount(selected_hero_two_energy) 
-    amount_heroes_selected += tob.verify_target_ocorrency_amount(selected_hero_three_energy) 
+    amount_heroes_selected = tob.verify_target_ocorrency_amount(selected_hero_one_energy, confidence=0.915)
+    amount_heroes_selected += tob.verify_target_ocorrency_amount(selected_hero_two_energy, confidence=0.95)
+    amount_heroes_selected += tob.verify_target_ocorrency_amount(selected_hero_three_energy, confidence=0.9)
     if amount_heroes_selected >= 3:
         await run_battle()
         return wait_for_battle_sec
@@ -224,17 +224,17 @@ async def prepare_and_fight():
         await run_battle()     
         return wait_for_battle_sec
 
-    await tob.hold_move_async(208, 295, 206, 433)
+    await tob.hold_move_async(215, 295, 206, 433)
     amount_heroes_selected = await select_heroes_to_fight(amount_heroes_selected)
         
     if amount_heroes_selected >= 3:
         await run_battle() 
         return wait_for_battle_sec 
 
-    await tob.hold_move_async(206, 433, 209, 554)
+    await tob.hold_move_async(215, 433, 209, 554)
     amount_heroes_selected = await select_heroes_to_fight_part2(amount_heroes_selected)    
     
-    await tob.hold_move_async(209, 554, 208, 295)
+    await tob.hold_move_async(215, 554, 208, 295)
 
     if amount_heroes_selected <= 0: 
         return wait_for_energy_sec
@@ -248,10 +248,10 @@ async def select_heroes_to_fight(amount_heroes_selected = 0):
     amount_heroes_selected = await add_heroes_to_fight(unselected_hero_three_energy, amount_heroes_selected)
 
     if amount_heroes_selected < 3:
-        amount_heroes_selected += await add_heroes_to_fight(unselected_hero_two_energy, amount_heroes_selected)
+        amount_heroes_selected = await add_heroes_to_fight(unselected_hero_two_energy, amount_heroes_selected)
 
     if amount_heroes_selected < 3:
-        amount_heroes_selected += await add_heroes_to_fight(unselected_hero_one_energy, amount_heroes_selected)
+        amount_heroes_selected = await add_heroes_to_fight(unselected_hero_one_energy, amount_heroes_selected)
 
     return amount_heroes_selected
 
