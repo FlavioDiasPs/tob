@@ -50,8 +50,6 @@ while(True):
     time.sleep(0.5)
 
 
-(730, 550, 200, 70)
-(930, 620)
 
 # asyncio.run(tob.hold_move_async(270, 300, 290, 125, max_x_precision_offset=2, min_move_duration=0.5, max_move_duration=0.8))
 

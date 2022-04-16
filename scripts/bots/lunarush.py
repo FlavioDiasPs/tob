@@ -35,13 +35,13 @@ selected_hero_two_energy = Target(cv2.imread('templates/lunarush/selected_hero_t
 selected_hero_three_energy = Target(cv2.imread('templates/lunarush/selected_hero_three_energy.png'), Area(230, 310, 550, 40))
 
 unselected_hero_one_energy = Target(cv2.imread('templates/lunarush/unselected_hero_one_energy.png'), Area(15, 195, 195, 400))
-unselected_hero_one_energy_part2 = Target(cv2.imread('templates/lunarush/unselected_hero_one_energy.png'), Area(15, 195, 195, 400))
+unselected_hero_one_energy_part2 = Target(cv2.imread('templates/lunarush/unselected_hero_one_energy.png'), Area(15, 338, 210, 262))
 
 unselected_hero_two_energy = Target(cv2.imread('templates/lunarush/unselected_hero_two_energy.png'), Area(15, 195, 195, 400))
-unselected_hero_two_energy_part2 = Target(cv2.imread('templates/lunarush/unselected_hero_two_energy.png'), Area(15, 195, 195, 400))
+unselected_hero_two_energy_part2 = Target(cv2.imread('templates/lunarush/unselected_hero_two_energy.png'), Area(15, 338, 210, 262))
 
 unselected_hero_three_energy = Target(cv2.imread('templates/lunarush/unselected_hero_three_energy.png'), Area(15, 195, 195, 400))
-unselected_hero_three_energy_part2 = Target(cv2.imread('templates/lunarush/unselected_hero_three_energy.png'), Area(15, 195, 195, 400))
+unselected_hero_three_energy_part2 = Target(cv2.imread('templates/lunarush/unselected_hero_three_energy.png'), Area(15, 338, 210, 262))
 
 notice = Target(cv2.imread('templates/lunarush/notice.png'), game_area) 
 defeat = Target(cv2.imread('templates/lunarush/defeat.png'), game_area)
@@ -263,10 +263,10 @@ async def select_heroes_to_fight_part2(amount_heroes_selected = 0):
     amount_heroes_selected = await add_heroes_to_fight(unselected_hero_three_energy_part2, amount_heroes_selected)
 
     if amount_heroes_selected < 3:
-        amount_heroes_selected += await add_heroes_to_fight(unselected_hero_two_energy_part2, amount_heroes_selected)
+        amount_heroes_selected = await add_heroes_to_fight(unselected_hero_two_energy_part2, amount_heroes_selected)
 
     if amount_heroes_selected < 3:
-        amount_heroes_selected += await add_heroes_to_fight(unselected_hero_one_energy_part2, amount_heroes_selected)
+        amount_heroes_selected = await add_heroes_to_fight(unselected_hero_one_energy_part2, amount_heroes_selected)
 
     return amount_heroes_selected
 
@@ -275,7 +275,7 @@ async def add_heroes_to_fight(target, amount_heroes_selected = 0):
     
     tob.move(random.uniform(30, 120), random.uniform(150,  190))
 
-    heroes_locations = await tob.find_targets_centers_async(target, confidence=0.95)
+    heroes_locations = await tob.find_targets_centers_async(target, confidence=0.90)
 
     for hero_location in heroes_locations:        
   
