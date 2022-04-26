@@ -11,7 +11,7 @@ from helpers.tober import Area, Target
 from helpers.printfier import Printer
 
 
-game_area = Area(-8, -8, 1000 , 750)
+game_area = Area(-8, -8, 1050 , 800)
 p = Printer("LunaRush")
    
 battle_not_ended_yet_sec = 0
@@ -27,21 +27,21 @@ btn_tap_to_open = Target(cv2.imread('templates/lunarush/btn_tap_to_open.png'), g
 btn_available_boss = Target(cv2.imread('templates/lunarush/btn_available_boss.png'), game_area)
 
 in_battle_versus = Target(cv2.imread('templates/lunarush/in_battle_versus.png'), game_area)
-btn_boss_hunt = Target(cv2.imread('templates/lunarush/btn_boss_hunt.png'), Area(730, 550, 200, 70))
+btn_boss_hunt = Target(cv2.imread('templates/lunarush/btn_boss_hunt.png'), Area(755, 600, 200, 70))
  
-selected_hero_no_energy = Target(cv2.imread('templates/lunarush/selected_hero_no_energy.png'), Area(230, 310, 550, 40))
-selected_hero_one_energy = Target(cv2.imread('templates/lunarush/selected_hero_one_energy.png'), Area(230, 310, 550, 40))
-selected_hero_two_energy = Target(cv2.imread('templates/lunarush/selected_hero_two_energy.png'), Area(230, 310, 550, 40))
-selected_hero_three_energy = Target(cv2.imread('templates/lunarush/selected_hero_three_energy.png'), Area(230, 310, 550, 40))
+selected_hero_no_energy = Target(cv2.imread('templates/lunarush/selected_hero_no_energy.png'), Area(255, 360, 550, 40))
+selected_hero_one_energy = Target(cv2.imread('templates/lunarush/selected_hero_one_energy.png'), Area(255, 360, 550, 40))
+selected_hero_two_energy = Target(cv2.imread('templates/lunarush/selected_hero_two_energy.png'), Area(255, 360, 550, 40))
+selected_hero_three_energy = Target(cv2.imread('templates/lunarush/selected_hero_three_energy.png'), Area(255, 360, 550, 40))
 
-unselected_hero_one_energy = Target(cv2.imread('templates/lunarush/unselected_hero_one_energy.png'), Area(15, 195, 195, 400))
-unselected_hero_one_energy_part2 = Target(cv2.imread('templates/lunarush/unselected_hero_one_energy.png'), Area(15, 338, 210, 262))
+unselected_hero_one_energy = Target(cv2.imread('templates/lunarush/unselected_hero_one_energy.png'), Area(40, 245, 195, 400))
+unselected_hero_one_energy_part2 = Target(cv2.imread('templates/lunarush/unselected_hero_one_energy.png'), Area(65, 388, 210, 262))
 
-unselected_hero_two_energy = Target(cv2.imread('templates/lunarush/unselected_hero_two_energy.png'), Area(15, 195, 195, 400))
-unselected_hero_two_energy_part2 = Target(cv2.imread('templates/lunarush/unselected_hero_two_energy.png'), Area(15, 338, 210, 262))
+unselected_hero_two_energy = Target(cv2.imread('templates/lunarush/unselected_hero_two_energy.png'), Area(40, 245, 195, 400))
+unselected_hero_two_energy_part2 = Target(cv2.imread('templates/lunarush/unselected_hero_two_energy.png'), Area(65, 388, 210, 262))
 
-unselected_hero_three_energy = Target(cv2.imread('templates/lunarush/unselected_hero_three_energy.png'), Area(15, 195, 195, 400))
-unselected_hero_three_energy_part2 = Target(cv2.imread('templates/lunarush/unselected_hero_three_energy.png'), Area(15, 338, 210, 262))
+unselected_hero_three_energy = Target(cv2.imread('templates/lunarush/unselected_hero_three_energy.png'), Area(40, 245, 195, 400))
+unselected_hero_three_energy_part2 = Target(cv2.imread('templates/lunarush/unselected_hero_three_energy.png'), Area(40, 388, 210, 262))
 
 notice = Target(cv2.imread('templates/lunarush/notice.png'), game_area) 
 defeat = Target(cv2.imread('templates/lunarush/defeat.png'), game_area)
