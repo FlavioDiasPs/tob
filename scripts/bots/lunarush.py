@@ -224,17 +224,17 @@ async def prepare_and_fight():
         await run_battle()     
         return wait_for_battle_sec
 
-    await tob.hold_move_async(215, 295, 206, 433)
+    await tob.hold_move_async(230, 295, 231, 433)
     amount_heroes_selected = await select_heroes_to_fight(amount_heroes_selected)
         
     if amount_heroes_selected >= 3:
         await run_battle() 
         return wait_for_battle_sec 
 
-    await tob.hold_move_async(215, 433, 209, 554)
+    await tob.hold_move_async(230, 433, 234, 554)
     amount_heroes_selected = await select_heroes_to_fight_part2(amount_heroes_selected)    
     
-    await tob.hold_move_async(215, 554, 208, 295)
+    await tob.hold_move_async(230, 554, 233, 295)
 
     if amount_heroes_selected <= 0: 
         return wait_for_energy_sec

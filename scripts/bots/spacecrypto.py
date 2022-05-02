@@ -34,6 +34,7 @@ btn_close_img = Target(cv2.imread('templates/spacecrypto/btn_close_img.png'), ga
 btn_ok_img = Target(cv2.imread('templates/spacecrypto/btn_ok_img.png'), game_area)
 btn_wait_unresponsive_img = Target(cv2.imread('templates/spacecrypto/btn_wait_unresponsive_img.png'), game_area)
 cant_be_reached_img = Target(cv2.imread('templates/chrome/cant_be_reached.png'), game_area)
+maintaning = Target(cv2.imread('templates/spacecrypto/maintaning.png'), game_area)
 
 
 btn_repair = Target(cv2.imread('templates/spacecrypto/btn_repair.png'), game_area)
@@ -302,6 +303,11 @@ async def check_confirm_buttons_async():
 async def handle_error_async():
 
     p.info('Checking possible errors')
+
+    if tob.safe_retry(tob.verify_target_exists, [maintaning], max_attempts=3, expected_result=True):        
+        await tob.refresh_page()
+        raise SpaceCryptoError("SpaceCrypto is maintaning. Leaving...")
+
     if tob.safe_retry(tob.verify_target_exists, [btn_wait_unresponsive_img], max_attempts=3, expected_result=True):
         await tob.click_target_center_async(btn_wait_unresponsive_img)
         await tob.refresh_page()

@@ -76,7 +76,7 @@ async def run_all_actions(bot_windows, next_action: Prodict):
 
 async def wrap_bot_function(next_action: Prodict):
     retry_count = 0
-    retry_limit = 5
+    retry_limit = 1
     retry_schedule_name = f'retry_failed_{next_action.bot_name}'
 
     bot_function = next_action.function

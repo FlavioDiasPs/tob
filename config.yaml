@@ -33,6 +33,7 @@ tob:
 #   intervals:
 #     wait_for_stamina_sec: 1800
 
+# deprecated - Tha game updated
 # agrofarm:  
 #   window_name: tob_agrofarm
 #   intervals:
